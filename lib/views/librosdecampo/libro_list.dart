@@ -127,34 +127,7 @@ class _LibroListViewState extends State<LibroListView> {
             color: const Color.fromARGB(255, 250, 250, 250),
             Icons.add
           ),
-        ), 
-        bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'Paciente'
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'libro'
-          )
-        ],
-        currentIndex: 2,
-        selectedItemColor: Color.fromARGB(255, 6, 67, 146),
-        onTap: (index) {
-          if (index == 0) {
-            Navigator.popUntil(context, ModalRoute.withName('/menu')); 
-          } else if (index == 1) {
-            Navigator.pushNamed(context, '/paciente/index'); 
-          } else if (index == 2) {
-            Navigator.pushNamed(context, '/libro/index'); 
-          }
-        },
-      ), 
+        ),  
     );
   }
 }
