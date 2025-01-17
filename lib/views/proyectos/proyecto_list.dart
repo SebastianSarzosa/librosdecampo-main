@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:libroscampo/models/proyectos.dart';
 import 'package:libroscampo/repositories/proyectos_repository.dart';
+import 'package:libroscampo/views/plantas/planta_list.dart';
 
 class ProyectoListView extends StatelessWidget {
   final int libroId;
@@ -60,9 +61,14 @@ class ProyectoListView extends StatelessWidget {
                   ),
                   trailing: Icon(Icons.arrow_forward_ios, color: Colors.teal), // Ícono de flecha al final
                   onTap: () {
-                    // Acción al tocar el proyecto (por ejemplo, navegar a otra pantalla)
-                    // Navigator.push(...) o cualquier otra acción.
-                  },
+                      // Navegar a la pantalla de proyectos
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PlantaListView(proyectoId: proyecto.idProyecto!),
+                        ),
+                      );
+                    },
                 ),
               );
             },
