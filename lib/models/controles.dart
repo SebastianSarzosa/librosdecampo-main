@@ -16,7 +16,7 @@ class Control {
     return {
       'id_control': idControl,
       'fkid_planta': fkidPlanta,
-      'descripcion_control': descripcion,
+      'descripcion': descripcion,
       'fecha_control': fechaControl,
     };
   }
@@ -26,7 +26,7 @@ class Control {
     return Control(
       idControl: map['id_control'],
       fkidPlanta: map['fkid_planta'],
-      descripcion: map['descripcion_control'],
+      descripcion: map['descripcion'],
       fechaControl: map['fecha_control'],
     );
   }
