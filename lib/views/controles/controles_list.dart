@@ -44,7 +44,7 @@ class ControlesListView extends StatelessWidget {
                   contentPadding: EdgeInsets.all(16.0),
                   leading: Icon(Icons.check_circle, size: 40, color: Colors.teal),
                   title: Text(
-                    control.idControl.toString(),
+                    control.descripcion.toString(),
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -52,7 +52,7 @@ class ControlesListView extends StatelessWidget {
                     ),
                   ),
                   subtitle: Text(
-                    'Descripción: ${control.descripcion}',
+                    'id: ${control.idControl}',
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey[600],
