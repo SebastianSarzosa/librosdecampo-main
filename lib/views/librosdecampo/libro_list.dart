@@ -47,7 +47,7 @@ class _LibroListViewState extends State<LibroListView> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.popUntil(context, ModalRoute.withName('/menu'));
+            Navigator.popUntil(context, ModalRoute.withName('/bienvenido'));
           },
         ),
       ),
