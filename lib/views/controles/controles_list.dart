@@ -1,40 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:libroscampo/models/plantas.dart';
-import 'package:libroscampo/repositories/plantas_repository.dart';
-import 'package:libroscampo/views/controles/controles_list.dart';
+import 'package:libroscampo/models/controles.dart';
+import 'package:libroscampo/repositories/controles_repository.dart';
 
-class PlantaListView extends StatelessWidget {
-  final int proyectoId;
+class ControlesListView extends StatelessWidget {
+  final int plantaId;
 
-  const PlantaListView({Key? key, required this.proyectoId}) : super(key: key);
+  const ControlesListView({Key? key, required this.plantaId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final PlantasRepository plantasRepository = PlantasRepository();
+    final ControlesRepository controlesRepository = ControlesRepository();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Plantas del Proyecto"),
+        title: Text("Controles de la Planta"),
         backgroundColor: Colors.teal,
       ),
-      body: FutureBuilder<List<Planta>>(
-        future: plantasRepository.listPlantsByProject(proyectoId),
+      body: FutureBuilder<List<Control>>(
+        future: controlesRepository.listControlsByPlant(plantaId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}', style: TextStyle(color: Colors.red)));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No hay plantas disponibles', style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic)));
+            return Center(child: Text('No hay controles disponibles', style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic)));
           }
 
-          final plantas = snapshot.data!;
+          final controles = snapshot.data!;
 
           return ListView.builder(
             padding: const EdgeInsets.all(8.0),
-            itemCount: plantas.length,
+            itemCount: controles.length,
             itemBuilder: (context, index) {
-              final planta = plantas[index];
+              final control = controles[index];
               return Card(
                 elevation: 5,
                 margin: EdgeInsets.symmetric(vertical: 8.0),
@@ -43,9 +42,9 @@ class PlantaListView extends StatelessWidget {
                 ),
                 child: ListTile(
                   contentPadding: EdgeInsets.all(16.0),
-                  leading: Icon(Icons.local_florist, size: 40, color: Colors.teal),
+                  leading: Icon(Icons.check_circle, size: 40, color: Colors.teal),
                   title: Text(
-                    planta.nombrePlanta,
+                    control.tipoControl,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -53,22 +52,17 @@ class PlantaListView extends StatelessWidget {
                     ),
                   ),
                   subtitle: Text(
-                    'Descripción: ${planta.descripcion}',
+                    'Descripción: ${control.descripcion}',
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey[600],
                     ),
                   ),
                   trailing: Icon(Icons.arrow_forward_ios, color: Colors.teal),
-                 onTap: () {
-                      // Navegar a la pantalla de proyectos
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ControlesListView(plantaId: planta.idPlanta!),
-                        ),
-                      );
-                    }
+                  onTap: () {
+                    // Acción al tocar el control (por ejemplo, navegar a otra pantalla)
+                    // Navigator.push(...) o cualquier otra acción.
+                  },
                 ),
               );
             },
