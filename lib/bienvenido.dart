@@ -61,7 +61,7 @@ class Bienvenido extends StatelessWidget {
           if (index == 0) {
             Navigator.popUntil(context, ModalRoute.withName('/bienvenido')); 
           } else if (index == 1) {
-            Navigator.pushNamed(context, '/menu'); 
+            Navigator.pushNamed(context, '/libro/index'); 
           }
         },
       ),
