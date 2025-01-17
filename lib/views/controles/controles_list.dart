@@ -44,7 +44,7 @@ class ControlesListView extends StatelessWidget {
                   contentPadding: EdgeInsets.all(16.0),
                   leading: Icon(Icons.check_circle, size: 40, color: Colors.teal),
                   title: Text(
-                    control.tipoControl,
+                    control.idControl.toString(),
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
