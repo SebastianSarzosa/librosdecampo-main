@@ -10,103 +10,100 @@ class DbConnection {
       join(await getDatabasesPath(),dbname),
       version: version,  //es opcional
       onCreate: (db, version) async =>{ //valida la base de datos del wait si existe pasa al oncreate 
-        await db.execute( """
+        await db.execute("""
           CREATE TABLE LibrosCampo(
-            id_libro integer primary key AUTOINCREMENT,
-            nombre_libro text not null,
-            descripcion_libro text not null,
-            fecha_creacion_libro date not null
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre_libro TEXT NOT NULL,
+            descripcion_libro TEXT NOT NULL,
+            fecha_creacion_libro DATE NOT NULL
           )
-          """
-        ),
-        await db.execute("""insert into LibrosCampo values
-          (1, 'Fitomejoramiento','Libro3','2022-11-11'),
-          (2, 'Caracterizacion','Libro2','2022-11-11'),
-          (3, 'Produccion','libro3,'2022-11-11')
-
-          """
-        ),
-        await db.execute("""
-          CREATE TABLE  Proyectos(
-            id_pro integer primary key AUTOINCREMENT,
-            nombre_pro text not null,
-            descripcion_pro text not null,
-            fecha_inicio_pro date not null,
-            fkid_libro integer not null,
-            foreign key (fk_libro) references LibrosCampo(id)
-          ); 
-          """
-        ),
-
-        await db.execute("""INSERT INTO proyectos (fkid_libro, nombre_pro, descripcion_pro, fecha_inicio_pro) VALUES
-        (1, 'Proyecto A', 'Descripción del proyecto A', '2025-01-03'),
-        (1, 'Proyecto B', 'Descripción del proyecto B', '2025-01-04'),
-        (2, 'Proyecto C', 'Descripción del proyecto C', '2025-01-05');
-          """
-        ),
+        """),
 
         await db.execute("""
-          CREATE TABLE plantas (
-          id_planta INTEGER PRIMARY KEY AUTOINCREMENT,
-          nombre_planta TEXT NOT NULL,
-          nombre_cientifico TEXT,
-          fkid_proyecto INTEGER NOT NULL,
-          FOREIGN KEY (fkid_proyecto) REFERENCES proyectos(id_proyecto) ON DELETE CASCADE
+          INSERT INTO LibrosCampo (id, nombre_libro, descripcion_libro, fecha_creacion_libro) VALUES
+          (1, 'Fitomejoramiento', 'Libro3', '${DateTime.parse('2022-11-11')}'),
+          (2, 'Caracterizacion', 'Libro2', '${DateTime.parse('2022-11-11')}'),
+          (3, 'Produccion', 'libro3', '${DateTime.parse('2022-11-11')}')
+        """),
+
+
+        await db.execute("""
+          CREATE TABLE Proyectos(
+            id_pro INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre_pro TEXT NOT NULL,
+            descripcion_pro TEXT NOT NULL,
+            fecha_inicio_pro DATE NOT NULL,
+            fkid_libro INTEGER NOT NULL,
+            FOREIGN KEY (fkid_libro) REFERENCES LibrosCampo(id)
           );
-          """
-        ),
-
-        await db.execute("""INSERT INTO plantas (fkid_proyecto, nombre_planta, nombre_cientifico) VALUES
-        (1, 'Planta 1', 'Plantae Scientifica 1'),
-        (1, 'Planta 2', 'Plantae Scientifica 2'),
-        (2, 'Planta 3', 'Plantae Scientifica 3'),
-        (3, 'Planta 4', 'Plantae Scientifica 4');
-        """
-        ),
+        """),
 
         await db.execute("""
-          CREATE TABLE controles (
-          id_control INTEGER PRIMARY KEY AUTOINCREMENT,
-          fecha_control DATE,
-          descripcion TEXT,
-          fkid_planta INTEGER NOT NULL,
-          FOREIGN KEY (fkid_planta) REFERENCES plantas(id_planta) ON DELETE CASCADE
-          );
-          """
-        ),
-
-        await db.execute("""INSERT INTO controles (fkid_planta, fecha_control, descripcion) VALUES
-        (1, '2025-01-06', 'Control de crecimiento inicial para Planta 1'),
-        (1, '2025-01-07', 'Control de nutrientes para Planta 1'),
-        (2, '2025-01-08', 'Control de plagas para Planta 2'),
-        (3, '2025-01-09', 'Control de riego para Planta 3'),
-        (4, '2025-01-10', 'Control de poda para Planta 4');
-        """
-        ),
+          INSERT INTO Proyectos (nombre_pro, descripcion_pro, fecha_inicio_pro, fkid_libro) VALUES
+          ('Proyecto A', 'Descripción del proyecto A', '2025-01-03', 1),
+          ('Proyecto B', 'Descripción del proyecto B', '2025-01-04', 1),
+          ('Proyecto C', 'Descripción del proyecto C', '2025-01-05', 2)
+        """),
 
         await db.execute("""
-          CREATE TABLE variables (
-          id_variable INTEGER PRIMARY KEY AUTOINCREMENT,
-          nombre_variable TEXT NOT NULL,
-          valor_texto TEXT,
-          valor_numerico NUMERIC,
-          valor_fecha DATE,
-          fkid_control INTEGER NOT NULL,
-          FOREIGN KEY (fkid_control) REFERENCES controles(id_control) ON DELETE CASCADE
+          CREATE TABLE Plantas (
+            id_planta INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre_planta TEXT NOT NULL,
+            nombre_cientifico TEXT,
+            fkid_proyecto INTEGER NOT NULL,
+            FOREIGN KEY (fkid_proyecto) REFERENCES Proyectos(id_pro) ON DELETE CASCADE
           );
-          """
-        ),
+        """),
 
-        await db.execute("""INSERT INTO variables (fkid_control, nombre_variable, valor_texto, valor_numerico, valor_fecha) VALUES
-        (1, 'Altura', NULL, 15.5, NULL),
-        (1, 'Color de hoja', 'Verde claro', NULL, NULL),
-        (2, 'Nutrientes', 'Alto contenido de Nitrógeno', NULL, NULL),
-        (3, 'Presencia de plagas', 'Ninguna', NULL, NULL),
-        (4, 'Cantidad de agua', NULL, 2.5, NULL),
-        (5, 'Fecha de última poda', NULL, NULL, '2025-01-10');
-        """
-        ),
-      }
+        await db.execute("""
+          INSERT INTO Plantas (nombre_planta, nombre_cientifico, fkid_proyecto) VALUES
+          ('Planta 1', 'Plantae Scientifica 1', 1),
+          ('Planta 2', 'Plantae Scientifica 2', 1),
+          ('Planta 3', 'Plantae Scientifica 3', 2),
+          ('Planta 4', 'Plantae Scientifica 4', 3)
+        """),
+
+        await db.execute("""
+          CREATE TABLE Controles (
+            id_control INTEGER PRIMARY KEY AUTOINCREMENT,
+            fecha_control DATE,
+            descripcion TEXT,
+            fkid_planta INTEGER NOT NULL,
+            FOREIGN KEY (fkid_planta) REFERENCES Plantas(id_planta) ON DELETE CASCADE
+          );
+        """),
+
+        await db.execute("""
+          INSERT INTO Controles (fecha_control, descripcion, fkid_planta) VALUES
+          ('2025-01-06', 'Control de crecimiento inicial para Planta 1', 1),
+          ('2025-01-07', 'Control de nutrientes para Planta 1', 1),
+          ('2025-01-08', 'Control de plagas para Planta 2', 2),
+          ('2025-01-09', 'Control de riego para Planta 3', 3),
+          ('2025-01-10', 'Control de poda para Planta 4', 4)
+        """),
+
+        await db.execute("""
+          CREATE TABLE Variables (
+            id_variable INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre_variable TEXT NOT NULL,
+            valor_texto TEXT,
+            valor_numerico NUMERIC,
+            valor_fecha DATE,
+            fkid_control INTEGER NOT NULL,
+            FOREIGN KEY (fkid_control) REFERENCES Controles(id_control) ON DELETE CASCADE
+          );
+        """),
+
+        await db.execute("""
+          INSERT INTO Variables (nombre_variable, valor_texto, valor_numerico, valor_fecha, fkid_control) VALUES
+          ('Altura', NULL, 15.5, NULL, 1),
+          ('Color de hoja', 'Verde claro', NULL, NULL, 1),
+          ('Nutrientes', 'Alto contenido de Nitrógeno', NULL, NULL, 2),
+          ('Presencia de plagas', 'Ninguna', NULL, NULL, 3),
+          ('Cantidad de agua', NULL, 2.5, NULL, 4),
+          ('Fecha de última poda', NULL, NULL, '2025-01-10', 5)
+        """),
+       } 
     );
   } 
   //insert : mandar datos y se crea solo el insert 

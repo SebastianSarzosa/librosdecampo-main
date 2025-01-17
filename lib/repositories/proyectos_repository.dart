@@ -15,8 +15,11 @@ class ProyectosRepository {
   }
 
   // Método para listar proyectos por ID de libro
-  Future<List<Map<String, dynamic>>> listProjectsByBook(String bookId) async {
-    return await DbConnection.filter(tableName, 'libro_id = ?', [bookId]);
+  Future<List<Proyecto>> listProjectsByBook(int bookId) async { // Cambia String a int
+    final List<Map<String, dynamic>> maps = await DbConnection.filter(tableName, 'fkid_libro = ?', [bookId]); // Asegúrate de que 'libro_id' sea la columna correcta
+    return List.generate(maps.length, (i) {
+      return Proyecto.fromMap(maps[i]); // Asegúrate de tener un método fromMap en tu modelo Proyecto
+    });
   }
 
   // Método para eliminar un proyecto por ID

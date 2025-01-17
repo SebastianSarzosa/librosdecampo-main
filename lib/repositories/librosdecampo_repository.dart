@@ -15,11 +15,11 @@ class LibrosRespository {
     }
     return List.generate(data.length, (i) => Librosdecampo.fromMap(data[i]));
   }
-  Future<int> delete(int idLibro) async {
-    return await DbConnection.delete(tableName, idLibro);
+  Future<int> delete(int id) async {
+    return await DbConnection.delete(tableName, id);
   }
-  Future<int> update(int idLibro, Librosdecampo libroCampo) async {
-    return await DbConnection.update(tableName, libroCampo.toMap(), idLibro);
+  Future<int> update(int id, Librosdecampo libroCampo) async {
+    return await DbConnection.update(tableName, libroCampo.toMap(), id);
   }
 
 
