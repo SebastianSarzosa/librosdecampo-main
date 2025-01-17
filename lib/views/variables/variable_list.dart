@@ -1,40 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:libroscampo/models/controles.dart';
-import 'package:libroscampo/repositories/controles_repository.dart';
-import 'package:libroscampo/views/variables/variable_list.dart';
+import 'package:libroscampo/models/variables.dart';
+import 'package:libroscampo/repositories/variables_repository.dart';
 
-class ControlesListView extends StatelessWidget {
-  final int plantaId;
+class VariablesListView extends StatelessWidget {
+  final int controlId;
 
-  const ControlesListView({Key? key, required this.plantaId}) : super(key: key);
+  const VariablesListView({Key? key, required this.controlId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final ControlesRepository controlesRepository = ControlesRepository();
+    final VariablesRepository variablesRepository = VariablesRepository();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Controles de la Planta"),
+        title: Text("Variables del Control"),
         backgroundColor: Colors.teal,
       ),
-      body: FutureBuilder<List<Control>>(
-        future: controlesRepository.listControlsByPlant(plantaId),
+      body: FutureBuilder<List<Variable>>(
+        future: variablesRepository.listVariablesByControl(controlId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}', style: TextStyle(color: Colors.red)));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No hay controles disponibles', style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic)));
+            return Center(child: Text('No hay variables disponibles', style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic)));
           }
 
-          final controles = snapshot.data!;
+          final variables = snapshot.data!;
 
           return ListView.builder(
             padding: const EdgeInsets.all(8.0),
-            itemCount: controles.length,
+            itemCount: variables.length,
             itemBuilder: (context, index) {
-              final control = controles[index];
+              final variable = variables[index];
               return Card(
                 elevation: 5,
                 margin: EdgeInsets.symmetric(vertical: 8.0),
@@ -45,7 +44,7 @@ class ControlesListView extends StatelessWidget {
                   contentPadding: EdgeInsets.all(16.0),
                   leading: Icon(Icons.check_circle, size: 40, color: Colors.teal),
                   title: Text(
-                    control.descripcion.toString(),
+                    variable.nombreVariable,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -53,22 +52,17 @@ class ControlesListView extends StatelessWidget {
                     ),
                   ),
                   subtitle: Text(
-                    'id: ${control.idControl}',
+                    'id: ${variable.idVariable}',
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey[600],
                     ),
                   ),
                   trailing: Icon(Icons.arrow_forward_ios, color: Colors.teal),
-                   onTap: () {
-                      // Navegar a la pantalla de proyectos
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => VariablesListView(controlId: control.idControl!),
-                        ),
-                      );
-                    },
+                  onTap: () {
+                    // Acción al tocar la variable (por ejemplo, navegar a otra pantalla)
+                    // Navigator.push(...) o cualquier otra acción.
+                  },
                 ),
               );
             },

@@ -19,7 +19,7 @@ class Planta {
       'id_planta': idPlanta,
       'fkid_proyecto': fkidProyecto,
       'nombre_planta': nombrePlanta,
-      'descripcion_planta': descripcion,
+      'nombre_cientifico': descripcion,
       'fecha_plantacion': fechaPlantacion,
     };
   }
@@ -30,7 +30,7 @@ class Planta {
       idPlanta: map['id_planta'],
       fkidProyecto: map['fkid_proyecto'],
       nombrePlanta: map['nombre_planta'],
-      descripcion: map['descripcion_planta'],
+      descripcion: map['nombre_cientifico'],
       fechaPlantacion: map['fecha_plantacion'],
     );
   }
