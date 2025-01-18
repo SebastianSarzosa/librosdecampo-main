@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class Variable {
   final int idVariable;
   final String nombreVariable;
