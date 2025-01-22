@@ -14,9 +14,13 @@ class ProyectoListView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Proyectos del Libro"),
-        backgroundColor: Colors.teal, // Cambiar color de la app bar
+        title: Text("Proyectos del Libro",
+           style: TextStyle(color: Colors.white),       
+        ),
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.green,
       ),
+      
       body: FutureBuilder<List<Proyecto>>(
         future: proyectosRepository.listProjectsByBook(libroId),
         builder: (context, snapshot) {

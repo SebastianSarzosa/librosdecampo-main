@@ -14,8 +14,18 @@ class ControlesListView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Controles de la Planta"),
-        backgroundColor: Colors.teal,
+        title: Text(
+          "Control de Plantas",
+          style: TextStyle(color: Colors.white),
+        ),
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.green,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.popUntil(context, ModalRoute.withName('/libro/index'));
+          },
+        ),
       ),
       body: FutureBuilder<List<Control>>(
         future: controlesRepository.listControlsByPlant(plantaId),

@@ -1,72 +1,62 @@
 import 'package:flutter/material.dart';
 
 class Bienvenido extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('BIENVENIDOS',
-          style: TextStyle(
-            color: Colors.white
-          ),
-        ),
-        backgroundColor: Colors.green
+        title: const Text('PLANT'),
+        backgroundColor: Colors.green,
+        foregroundColor: Colors.white,
       ),
-      body: Column(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.all(20),
-            child: Text('Bienvenidos a la aplicación de libros de campo',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold
-              ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'BIENVENIDO',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-          ),
-          Container(
-            margin: EdgeInsets.all(20),
-            child: Text('En esta aplicación podrá llevar el control de los libros de campo de su empresa',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold
-              ),
+            const SizedBox(height: 16),
+            Image.asset(
+              'assets/images/inicio/area.jpg',
+              height: 200,
             ),
-          ),
-          Container(
-            margin: EdgeInsets.all(20),
-            child: Text('Para comenzar, presione el botón de menú en la esquina superior izquierda',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold
-              ),
+            const SizedBox(height: 16),
+            const Text(
+              'FORTALECIMIENTO DE CAPACIDADES\nPRODUCTIVAS VITRINAS TECNOLOGICAS\nUTC-INIAP-KOPIA',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16),
             ),
-          ),
-        ],
-      ), 
+            const SizedBox(height: 32),
+            
+          ],
+        ),
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'Libros de campo'
+            icon: Icon(Icons.book),
+            label: 'Libros de Campo',
           ),
+          
         ],
         currentIndex: 0,
-        selectedItemColor: Color.fromARGB(255, 6, 67, 146),
+        selectedItemColor: Colors.green,
         onTap: (index) {
           if (index == 0) {
-            Navigator.popUntil(context, ModalRoute.withName('/bienvenido')); 
+            Navigator.popUntil(context, ModalRoute.withName('/bienvenida')); // Ir a la pantalla de inicio
           } else if (index == 1) {
-            Navigator.pushNamed(context, '/libro/index'); 
+            Navigator.pushNamed(context, '/libro/index'); // Ir a la pantalla de la cámara
+         
           }
         },
       ),
     );
-    
   }
-  
 }

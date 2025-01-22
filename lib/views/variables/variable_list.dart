@@ -13,8 +13,11 @@ class VariablesListView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Variables del Control"),
-        backgroundColor: Colors.teal,
+        title: Text("Variables del Control",
+          style: TextStyle(color: Colors.white),
+        ),
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.green,
       ),
       body: FutureBuilder<List<Variable>>(
         future: variablesRepository.listVariablesByControl(controlId),

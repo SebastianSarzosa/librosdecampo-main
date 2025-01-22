@@ -14,8 +14,11 @@ class PlantaListView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Plantas del Proyecto"),
-        backgroundColor: Colors.teal,
+        title: Text("Plantas del Proyecto",
+          style: TextStyle(color: Colors.white),
+        ),
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.green,
       ),
       body: FutureBuilder<List<Planta>>(
         future: plantasRepository.listPlantsByProject(proyectoId),

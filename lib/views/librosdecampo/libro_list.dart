@@ -29,11 +29,7 @@ class _LibroListViewState extends State<LibroListView> {
     });
   }
 
-  Future<void> _eliminarLibro(int id) async {
-    await _librosRespository.delete(id);
-    _cargarLibro();
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,22 +49,39 @@ class _LibroListViewState extends State<LibroListView> {
       ),
       body: _libros.isEmpty
           ? Center(
-              child: Text('No hay datos'),
+              child: Text('No hay datos', style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic)),
             )
           : ListView.builder(
+              padding: const EdgeInsets.all(8.0),
               itemCount: _libros.length,
               itemBuilder: (context, i) {
                 final libro = _libros[i];
                 return Card(
+                  elevation: 5,
+                  margin: EdgeInsets.symmetric(vertical: 8.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   child: ListTile(
-                    title: Text('${libro.nombreLibro} '),
-                    subtitle: Column(
-                      children: [
-                        Text('descripcion: ${libro.descripcionLibro}')
-                      ],
+                    contentPadding: EdgeInsets.all(16.0),
+                    leading: Icon(Icons.book, size: 40, color: Colors.teal),
+                    title: Text(
+                      libro.nombreLibro,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.teal,
+                      ),
                     ),
+                    subtitle: Text(
+                      'Descripción: ${libro.descripcionLibro}',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    trailing: Icon(Icons.arrow_forward_ios, color: Colors.teal),
                     onTap: () {
-                      // Navegar a la pantalla de proyectos
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -76,69 +89,11 @@ class _LibroListViewState extends State<LibroListView> {
                         ),
                       );
                     },
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.edit,
-                            color: Color.fromARGB(255, 6, 94, 9),
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () async {
-                            final mensaje = await showDialog<bool>(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text('Eliminar libro'),
-                                  content: Text('¿Está seguro de eliminar el libro?'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context, false);
-                                      },
-                                      child: Text('No'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context, true);
-                                      },
-                                      child: Text('Si'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                            if (mensaje == true) {
-                              _eliminarLibro(libro.id!);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(' ${libro.nombreLibro} eliminado exitosamente')),
-                              );
-                            }
-                          },
-                          icon: Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                 );
               },
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/libro/form');
-        },
-        backgroundColor: Color.fromARGB(255, 6, 67, 146),
-        child: Icon(
-          color: const Color.fromARGB(255, 250, 250, 250),
-          Icons.add,
-        ),
-      ),
+      
     );
   }
 }
