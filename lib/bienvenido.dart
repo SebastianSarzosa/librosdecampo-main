@@ -50,7 +50,7 @@ class Bienvenido extends StatelessWidget {
         selectedItemColor: Colors.green,
         onTap: (index) {
           if (index == 0) {
-            Navigator.popUntil(context, ModalRoute.withName('/bienvenida')); // Ir a la pantalla de inicio
+            Navigator.popUntil(context, ModalRoute.withName('/bienvenido')); // Ir a la pantalla de inicio
           } else if (index == 1) {
             Navigator.pushNamed(context, '/libro/index'); // Ir a la pantalla de la cámara
          

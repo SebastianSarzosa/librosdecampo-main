@@ -61,11 +61,7 @@ class VariablesListView extends StatelessWidget {
                       color: Colors.grey[600],
                     ),
                   ),
-                  trailing: Icon(Icons.arrow_forward_ios, color: Colors.teal),
-                  onTap: () {
-                    // Acción al tocar la variable (por ejemplo, navegar a otra pantalla)
-                    // Navigator.push(...) o cualquier otra acción.
-                  },
+                  
                 ),
               );
             },
