@@ -5,6 +5,7 @@ import 'package:libroscampo/views/controles/controles_list.dart';
 
 class PlantaListView extends StatelessWidget {
   final int proyectoId;
+  
 
   const PlantaListView({Key? key, required this.proyectoId}) : super(key: key);
 

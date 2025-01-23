@@ -25,11 +25,11 @@ class MyApp extends StatelessWidget {
         '/libro/index': (context) => LibroListView(),
         '/proyecto/index': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-          return ProyectoListView(libroId: args['libroId']);
+          return ProyectoListView(libroId: args['libroId'], libroNombre: args['libroNombre']);
         },
         '/proyecto/form': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-          return ProyectoFormView(libroId: args['libroId']);
+          return ProyectoFormView(libroId: args['libroId'],libroNombre: args['libroNombre'],);
         },
         '/planta/index': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;

@@ -85,7 +85,7 @@ class _LibroListViewState extends State<LibroListView> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ProyectoListView(libroId: libro.id!),
+                          builder: (context) => ProyectoListView(libroId: libro.id!, libroNombre:libro.nombreLibro),
                         ),
                       );
                     },

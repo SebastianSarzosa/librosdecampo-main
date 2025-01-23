@@ -5,8 +5,9 @@ import 'package:libroscampo/views/plantas/planta_list.dart';
 
 class ProyectoListView extends StatelessWidget {
   final int libroId;
+  final String libroNombre;
 
-  ProyectoListView({required this.libroId});
+  ProyectoListView({required this.libroId, required this.libroNombre});
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +15,10 @@ class ProyectoListView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Proyectos del Libro",
-           style: TextStyle(color: Colors.white),       
+        title: Text("Proyectos de $libroNombre",
+           style: TextStyle(color: Colors.white, 
+           fontSize: 19.5,
+           ),       
         ),
         foregroundColor: Colors.white,
         backgroundColor: Colors.green,

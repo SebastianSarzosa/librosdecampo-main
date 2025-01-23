@@ -8,8 +8,8 @@ import 'package:libroscampo/views/proyectos/proyecto_list.dart';
 
 class ProyectoFormView extends StatefulWidget {
   final int libroId; // Recibe el ID del libro seleccionado
-
-  ProyectoFormView({required this.libroId});
+  final String libroNombre; // Recibe el nombre del libro seleccionado
+  ProyectoFormView({required this.libroId, required this.libroNombre});
 
   @override
   State<ProyectoFormView> createState() => _ProyectoFormViewState();
@@ -152,7 +152,7 @@ class _ProyectoFormViewState extends State<ProyectoFormView> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ProyectoListView(libroId: widget.libroId),
+                            builder: (context) => ProyectoListView(libroId: widget.libroId,libroNombre: widget.libroNombre),
                           ),
                         );
                       },
