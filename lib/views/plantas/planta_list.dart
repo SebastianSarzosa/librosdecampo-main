@@ -5,9 +5,9 @@ import 'package:libroscampo/views/controles/controles_list.dart';
 
 class PlantaListView extends StatelessWidget {
   final int proyectoId;
-  
+  final String proyectoNombre;
 
-  const PlantaListView({Key? key, required this.proyectoId}) : super(key: key);
+  const PlantaListView({Key? key, required this.proyectoId, required this.proyectoNombre}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +42,18 @@ class PlantaListView extends StatelessWidget {
 
           return ListView.builder(
             padding: const EdgeInsets.all(8.0),
-            itemCount: plantas.length,
+            itemCount: plantas.length + 1, // +1 para incluir el texto antes de los cards
             itemBuilder: (context, index) {
-              final planta = plantas[index];
+              if (index == 0) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Proyecto. $proyectoNombre',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
+                );
+              }
+              final planta = plantas[index - 1];
               return Card(
                 elevation: 5,
                 margin: EdgeInsets.symmetric(vertical: 8.0),
@@ -70,15 +79,14 @@ class PlantaListView extends StatelessWidget {
                     ),
                   ),
                   trailing: Icon(Icons.arrow_forward_ios, color: Colors.teal),
-                 onTap: () {
-                      // Navegar a la pantalla de proyectos
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ControlesListView(plantaId: planta.idPlanta!),
-                        ),
-                      );
-                    }
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ControlesListView(plantaId: planta.idPlanta!),
+                      ),
+                    );
+                  }
                 ),
               );
             },
@@ -86,19 +94,19 @@ class PlantaListView extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(
-              context,
-              '/planta/numero',
-              arguments: {'proyectoId': proyectoId},
-            );
-          },
-          backgroundColor: Colors.green,
-          child: Icon(
-            color: const Color.fromARGB(255, 250, 250, 250),
-            Icons.add
-          ),
+        onPressed: () {
+          Navigator.pushNamed(
+            context,
+            '/planta/numero',
+            arguments: {'proyectoId': proyectoId},
+          );
+        },
+        backgroundColor: Colors.green,
+        child: Icon(
+          color: const Color.fromARGB(255, 250, 250, 250),
+          Icons.add
         ),
+      ),
     );
   }
 }

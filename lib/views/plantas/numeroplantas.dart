@@ -3,8 +3,9 @@ import 'package:libroscampo/views/plantas/planta_form.dart';
 
 class NumeroPlantasForm extends StatefulWidget {
   final int proyectoId;
+  final String proyectoNombre;
 
-  NumeroPlantasForm({required this.proyectoId});
+  NumeroPlantasForm({required this.proyectoId,required this.proyectoNombre});
 
   @override
   _NumeroPlantasFormState createState() => _NumeroPlantasFormState();
@@ -58,6 +59,7 @@ class _NumeroPlantasFormState extends State<NumeroPlantasForm> {
                         builder: (context) => PlantaFormView(
                           proyectoId: widget.proyectoId,
                           numeroPlantas: numeroPlantas,
+                          proyectoNombre: widget.proyectoNombre,
                         ),
                       ),
                     );

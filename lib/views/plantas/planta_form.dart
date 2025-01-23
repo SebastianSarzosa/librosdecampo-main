@@ -7,8 +7,9 @@ import 'package:libroscampo/views/plantas/planta_list.dart';
 class PlantaFormView extends StatefulWidget {
   final int proyectoId;
   final int numeroPlantas;
+  final String proyectoNombre;
 
-  PlantaFormView({required this.proyectoId, required this.numeroPlantas});
+  PlantaFormView({required this.proyectoId, required this.numeroPlantas,required this.proyectoNombre});
 
   @override
   State<PlantaFormView> createState() => _PlantaFormViewState();
@@ -102,7 +103,7 @@ class _PlantaFormViewState extends State<PlantaFormView> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PlantaListView(proyectoId: widget.proyectoId),
+                        builder: (context) => PlantaListView(proyectoId: widget.proyectoId,proyectoNombre: widget.proyectoNombre),
                       ),
                     );
                   }

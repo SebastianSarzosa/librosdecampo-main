@@ -23,7 +23,7 @@ class ControlesListView extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.popUntil(context, ModalRoute.withName('/libro/index'));
+            Navigator.pop(context);
           },
         ),
       ),
