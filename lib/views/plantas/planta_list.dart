@@ -19,6 +19,12 @@ class PlantaListView extends StatelessWidget {
         ),
         foregroundColor: Colors.white,
         backgroundColor: Colors.green,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushNamed(context, '/proyecto/index', arguments: {'libroId': proyectoId});
+          },
+        ),
       ),
       body: FutureBuilder<List<Planta>>(
         future: plantasRepository.listPlantsByProject(proyectoId),
@@ -78,6 +84,20 @@ class PlantaListView extends StatelessWidget {
           );
         },
       ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.pushNamed(
+              context,
+              '/planta/form',
+              arguments: {'proyectoId': proyectoId},
+            );
+          },
+          backgroundColor: Colors.green,
+          child: Icon(
+            color: const Color.fromARGB(255, 250, 250, 250),
+            Icons.add
+          ),
+        ),
     );
   }
 }

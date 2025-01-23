@@ -5,6 +5,8 @@ import 'package:libroscampo/views/librosdecampo/libro_list.dart';
 import 'package:libroscampo/views/login.dart';
 import 'package:libroscampo/views/proyectos/proyecto_form.dart';
 import 'package:libroscampo/views/proyectos/proyecto_list.dart';
+import 'package:libroscampo/views/plantas/planta_form.dart';
+import 'package:libroscampo/views/plantas/planta_list.dart';
 
 void main() => runApp(MyApp());
 
@@ -27,7 +29,16 @@ class MyApp extends StatelessWidget{
         '/proyecto/form': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
           return ProyectoFormView(libroId: args['libroId']);
-        },             
+        },
+        '/planta/index': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          return PlantaListView(proyectoId: args['proyectoId']);
+        },
+        '/planta/form': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          return PlantaFormView(proyectoId: args['proyectoId']);
+        },      
+               
       },
     );
   }
