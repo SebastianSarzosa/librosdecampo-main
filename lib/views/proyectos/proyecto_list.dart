@@ -6,7 +6,7 @@ import 'package:libroscampo/views/plantas/planta_list.dart';
 class ProyectoListView extends StatelessWidget {
   final int libroId;
 
-  const ProyectoListView({Key? key, required this.libroId}) : super(key: key);
+  ProyectoListView({required this.libroId});
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +19,12 @@ class ProyectoListView extends StatelessWidget {
         ),
         foregroundColor: Colors.white,
         backgroundColor: Colors.green,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.popUntil(context, ModalRoute.withName('/libro/index'));
+          },
+        ),
       ),
       
       body: FutureBuilder<List<Proyecto>>(
@@ -79,6 +85,20 @@ class ProyectoListView extends StatelessWidget {
           );
         },
       ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.pushNamed(
+              context,
+              '/proyecto/form',
+              arguments: {'libroId': libroId},
+            );
+          },
+          backgroundColor: Colors.green,
+          child: Icon(
+            color: const Color.fromARGB(255, 250, 250, 250),
+            Icons.add
+          ),
+        ),
     );
   }
 }
