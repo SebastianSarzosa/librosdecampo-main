@@ -22,7 +22,7 @@ class PlantaListView extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pushNamed(context, '/proyecto/index', arguments: {'libroId': proyectoId});
+            Navigator.pop(context);
           },
         ),
       ),
@@ -88,7 +88,7 @@ class PlantaListView extends StatelessWidget {
           onPressed: () {
             Navigator.pushNamed(
               context,
-              '/planta/form',
+              '/planta/numero',
               arguments: {'proyectoId': proyectoId},
             );
           },

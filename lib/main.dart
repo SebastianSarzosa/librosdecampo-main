@@ -7,10 +7,11 @@ import 'package:libroscampo/views/proyectos/proyecto_form.dart';
 import 'package:libroscampo/views/proyectos/proyecto_list.dart';
 import 'package:libroscampo/views/plantas/planta_form.dart';
 import 'package:libroscampo/views/plantas/planta_list.dart';
+import 'package:libroscampo/views/plantas/numeroplantas.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget{
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,9 +19,9 @@ class MyApp extends StatelessWidget{
       title: "Aplicación Libros de campo",
       initialRoute: '/login',
       routes: {
-        '/login':(context) => LoginCreate(),
-        '/bienvenido':(context) => Bienvenido(),
-        '/menu':(context) => Menu(),
+        '/login': (context) => LoginCreate(),
+        '/bienvenido': (context) => Bienvenido(),
+        '/menu': (context) => Menu(),
         '/libro/index': (context) => LibroListView(),
         '/proyecto/index': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
@@ -36,9 +37,12 @@ class MyApp extends StatelessWidget{
         },
         '/planta/form': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-          return PlantaFormView(proyectoId: args['proyectoId']);
-        },      
-               
+          return PlantaFormView(proyectoId: args['proyectoId'], numeroPlantas: args['numeroPlantas']);
+        },
+        '/planta/numero': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          return NumeroPlantasForm(proyectoId: args['proyectoId']);
+        },
       },
     );
   }
