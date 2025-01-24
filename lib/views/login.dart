@@ -83,18 +83,21 @@ class _LoginCreateState extends State<LoginCreate> {
               ElevatedButton(
                 onPressed: () async {
                   if (loginForm.currentState!.validate()) {
-                    final user = await DbConnection.getUser (
+                    final user = await DbConnection.getUser(
                       emailController.text,
                       passwordController.text,
                     );
 
                     if (user != null) {
                       // Verifica el rol del usuario
-                      if (user['rol_usuario'] == 'admin') {
-                        Navigator.pushNamed(context, '/bienvenido');
-                      } else {
-                        Navigator.pushNamed(context, '/bienvenido');
-                      }
+                      final userRole = user['rol_usuario'];
+                      final userName = user['nombre_usuario'];
+
+                      Navigator.pushNamed(
+                        context,
+                        '/bienvenido',
+                        arguments: {'userRole': userRole, 'userName': userName},
+                      );
                     } else {
                       // Muestra un mensaje de error si las credenciales son incorrectas
                       ScaffoldMessenger.of(context).showSnackBar(

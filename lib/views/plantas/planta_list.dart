@@ -23,7 +23,11 @@ class PlantaListView extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushReplacementNamed(
+              context,
+              '/proyecto/index',
+              arguments: {'libroId': proyectoId, 'libroNombre': proyectoNombre,'userRole': 'admin'},
+            );
           },
         ),
       ),

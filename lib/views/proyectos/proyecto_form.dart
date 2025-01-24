@@ -9,7 +9,8 @@ import 'package:libroscampo/views/proyectos/proyecto_list.dart';
 class ProyectoFormView extends StatefulWidget {
   final int libroId; // Recibe el ID del libro seleccionado
   final String libroNombre; // Recibe el nombre del libro seleccionado
-  ProyectoFormView({required this.libroId, required this.libroNombre});
+  final String userRole; // Recibe el rol del usuario
+  ProyectoFormView({required this.libroId, required this.libroNombre,required this.userRole});
 
   @override
   State<ProyectoFormView> createState() => _ProyectoFormViewState();
@@ -126,7 +127,8 @@ class _ProyectoFormViewState extends State<ProyectoFormView> {
                               context,
                               '/proyecto/index',
                               arguments: {'libroId': widget.libroId,
-                              'libroNombre': widget.libroNombre},
+                              'libroNombre': widget.libroNombre,'userRole': widget.userRole},
+                        
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -153,7 +155,7 @@ class _ProyectoFormViewState extends State<ProyectoFormView> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ProyectoListView(libroId: widget.libroId,libroNombre: widget.libroNombre),
+                            builder: (context) => ProyectoListView(libroId: widget.libroId,libroNombre: widget.libroNombre,userRole: widget.userRole,),
                           ),
                         );
                       },

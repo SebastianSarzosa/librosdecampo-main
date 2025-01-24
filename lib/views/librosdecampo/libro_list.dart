@@ -6,7 +6,8 @@ import 'package:libroscampo/repositories/librosdecampo_repository.dart';
 import 'package:libroscampo/views/proyectos/proyecto_list.dart'; // Asegúrate de importar la vista de proyectos
 
 class LibroListView extends StatefulWidget {
-  const LibroListView({super.key});
+    final String userRole; // Añade el campo userRole
+    const LibroListView({super.key, required this.userRole});
 
   @override
   State<LibroListView> createState() => _LibroListViewState();
@@ -43,7 +44,11 @@ class _LibroListViewState extends State<LibroListView> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.popUntil(context, ModalRoute.withName('/bienvenido'));
+            Navigator.pushReplacementNamed(
+              context,
+              '/bienvenido',
+              arguments: {'userRole': widget.userRole},
+            );
           },
         ),
       ),
@@ -85,7 +90,7 @@ class _LibroListViewState extends State<LibroListView> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ProyectoListView(libroId: libro.id!, libroNombre:libro.nombreLibro),
+                          builder: (context) => ProyectoListView(libroId: libro.id!, libroNombre:libro.nombreLibro, userRole: widget.userRole), // Asegúrate de pasar el id del libro
                         ),
                       );
                     },

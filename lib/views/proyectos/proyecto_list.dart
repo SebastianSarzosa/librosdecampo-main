@@ -6,11 +6,14 @@ import 'package:libroscampo/views/plantas/planta_list.dart';
 class ProyectoListView extends StatelessWidget {
   final int libroId;
   final String libroNombre;
+  final String userRole;  // Asegúrate de que este campo sea final
 
-  ProyectoListView({required this.libroId, required this.libroNombre});
+
+  ProyectoListView({required this.libroId, required this.libroNombre, required this.userRole});
 
   @override
   Widget build(BuildContext context) {
+  print('User  Role: $userRole'); 
     final ProyectosRepository proyectosRepository = ProyectosRepository();
 
     return Scaffold(
@@ -25,7 +28,11 @@ class ProyectoListView extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.popUntil(context, ModalRoute.withName('/libro/index'));
+            Navigator.pushReplacementNamed(
+              context,
+              '/libro/index',
+              arguments: {'userRole': userRole},
+            );
           },
         ),
       ),
@@ -88,12 +95,13 @@ class ProyectoListView extends StatelessWidget {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: userRole == 'admin' // Mostrar el botón solo si el rol es admin
+      ? FloatingActionButton(
           onPressed: () {
             Navigator.pushNamed(
               context,
               '/proyecto/form',
-              arguments: {'libroId': libroId, 'libroNombre': libroNombre},
+              arguments: {'libroId': libroId, 'libroNombre': libroNombre, 'userRole': userRole}
             );
           },
           backgroundColor: Colors.green,
@@ -101,7 +109,9 @@ class ProyectoListView extends StatelessWidget {
             color: const Color.fromARGB(255, 250, 250, 250),
             Icons.add
           ),
-        ),
+        )
+      : null, // Si no es admin, no mostrar el botón
     );
   }
+  
 }

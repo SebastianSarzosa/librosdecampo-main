@@ -20,16 +20,22 @@ class MyApp extends StatelessWidget {
       initialRoute: '/login',
       routes: {
         '/login': (context) => LoginCreate(),
-        '/bienvenido': (context) => Bienvenido(),
+        '/bienvenido': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          return Bienvenido(userRole: args['userRole'] , userName: args['userName']);
+        },
         '/menu': (context) => Menu(),
-        '/libro/index': (context) => LibroListView(),
+        '/libro/index': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          return LibroListView(userRole: args['userRole']);
+        },
         '/proyecto/index': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-          return ProyectoListView(libroId: args['libroId'], libroNombre: args['libroNombre']);
+          return ProyectoListView(libroId: args['libroId'], libroNombre: args['libroNombre'], userRole: args['userRole']);
         },
         '/proyecto/form': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-          return ProyectoFormView(libroId: args['libroId'],libroNombre: args['libroNombre'],);
+          return ProyectoFormView(libroId: args['libroId'],libroNombre: args['libroNombre'], userRole: args['userRole']);
         },
         '/planta/index': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
