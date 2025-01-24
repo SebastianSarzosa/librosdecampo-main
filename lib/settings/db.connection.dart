@@ -1,3 +1,4 @@
+import 'package:libroscampo/models/user.dart';
 import 'package:sqflite/sqflite.dart'; //importar conexop a sqliite
 import 'package:path/path.dart'; //importar gestor de rutas
 
@@ -104,8 +105,29 @@ class DbConnection {
           ('Cantidad de agua', NULL, 2.5, NULL, 4),
           ('Fecha de última poda', NULL, NULL, '2025-01-10', 5)
         """),
+
+         await db.execute("""
+           CREATE TABLE Usuarios (
+            id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre_usuario TEXT NOT NULL,
+            password_usuario TEXT,
+            rol_usuario TEXT
+          );
+        """),
+
+        await db.execute("""
+          INSERT INTO Usuarios (nombre_usuario, password_usuario, rol_usuario) VALUES
+          ('admin', 'admin123', 'admin'),
+          ('visor', 'visor123', 'visor'),
+          ('user1', 'user123', 'visor'),
+          ('user2', 'user456', 'visor');
+        """),
        } 
     );
+
+
+
+    
   } 
   //insert : mandar datos y se crea solo el insert 
   static Future<int> insert(String tableName, dynamic data) async{
@@ -168,5 +190,26 @@ class DbConnection {
   static Future<List<Map<String, dynamic>>> selectSql(String sql) async{
     final db=await getDatabase();
     return db.rawQuery(sql);
+  }
+
+  // Método para insertar un usuario
+  static Future<int> insertUser (User user) async {
+    final db = await getDatabase();
+    return db.insert('Usuarios', user.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  // Método para obtener un usuario por nombre de usuario y contraseña
+  static Future<Map<String, dynamic>?> getUser (String username, String password) async {
+    final db = await getDatabase();
+    final List<Map<String, dynamic>> maps = await db.query(
+      'Usuarios',
+      where: 'nombre_usuario = ? AND password_usuario = ?',
+      whereArgs: [username, password],
+    );
+
+    if (maps.isNotEmpty) {
+      return maps.first; // Retorna el primer usuario encontrado
+    }
+    return null; // Retorna null si no se encuentra el usuario
   }
 }

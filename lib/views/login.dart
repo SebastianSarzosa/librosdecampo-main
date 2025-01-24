@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:libroscampo/settings/db.connection.dart';
 
 class LoginCreate extends StatefulWidget {
   const LoginCreate({super.key});
@@ -11,7 +12,6 @@ class _LoginCreateState extends State<LoginCreate> {
   final loginForm = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +40,10 @@ class _LoginCreateState extends State<LoginCreate> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
+                decoration: const InputDecoration(labelText: 'Usuario'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese su correo electrónico';
+                    return 'Por favor ingrese su nombre de usuario';
                   }
                   return null;
                 },
@@ -68,9 +68,29 @@ class _LoginCreateState extends State<LoginCreate> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (loginForm.currentState!.validate()) {
-                    Navigator.pushNamed(context, '/bienvenido');
+                    final user = await DbConnection.getUser(
+                      emailController.text,
+                      passwordController.text,
+                    );
+
+                    if (user != null) {
+                      // Verifica el rol del usuario
+                      if (user['rol_usuario'] == 'admin') {
+                        Navigator.pushNamed(context, '/bienvenido');
+                      } else {
+                        Navigator.pushNamed(context, '/bienvenido');
+                      }
+                    } else {
+                      // Muestra un mensaje de error si las credenciales son incorrectas
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Credenciales incorrectas'),
+                          backgroundColor: Colors.red, // Fondo rojo para el mensaje de error
+                        ),
+                      );
+                    }
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -79,9 +99,7 @@ class _LoginCreateState extends State<LoginCreate> {
                 ),
                 child: const Text('Iniciar Sesión'),
               ),
-            
               const SizedBox(height: 16),
-              
             ],
           ),
         ),
