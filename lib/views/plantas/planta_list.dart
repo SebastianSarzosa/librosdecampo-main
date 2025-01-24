@@ -98,7 +98,7 @@ class PlantaListView extends StatelessWidget {
           Navigator.pushNamed(
             context,
             '/planta/numero',
-            arguments: {'proyectoId': proyectoId},
+            arguments: {'proyectoId': proyectoId, 'proyectoNombre': proyectoNombre},
           );
         },
         backgroundColor: Colors.green,

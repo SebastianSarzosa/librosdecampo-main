@@ -125,7 +125,8 @@ class _ProyectoFormViewState extends State<ProyectoFormView> {
                             Navigator.pushNamed(
                               context,
                               '/proyecto/index',
-                              arguments: {'libroId': widget.libroId},
+                              arguments: {'libroId': widget.libroId,
+                              'libroNombre': widget.libroNombre},
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(

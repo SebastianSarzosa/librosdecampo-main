@@ -93,7 +93,7 @@ class ProyectoListView extends StatelessWidget {
             Navigator.pushNamed(
               context,
               '/proyecto/form',
-              arguments: {'libroId': libroId},
+              arguments: {'libroId': libroId, 'libroNombre': libroNombre},
             );
           },
           backgroundColor: Colors.green,
