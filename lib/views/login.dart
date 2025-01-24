@@ -12,6 +12,7 @@ class _LoginCreateState extends State<LoginCreate> {
   final loginForm = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool _obscureText = true; // Variable para controlar la visibilidad de la contraseña
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +51,20 @@ class _LoginCreateState extends State<LoginCreate> {
               ),
               TextFormField(
                 controller: passwordController,
-                decoration: const InputDecoration(labelText: 'Contraseña'),
-                obscureText: true,
+                obscureText: _obscureText, // Controla la visibilidad de la contraseña
+                decoration: InputDecoration(
+                  labelText: 'Contraseña',
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureText ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText; // Cambia el estado de visibilidad
+                      });
+                    },
+                  ),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor ingrese su contraseña';
@@ -70,7 +83,7 @@ class _LoginCreateState extends State<LoginCreate> {
               ElevatedButton(
                 onPressed: () async {
                   if (loginForm.currentState!.validate()) {
-                    final user = await DbConnection.getUser(
+                    final user = await DbConnection.getUser (
                       emailController.text,
                       passwordController.text,
                     );
