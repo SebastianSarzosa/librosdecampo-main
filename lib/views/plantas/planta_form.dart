@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:libroscampo/models/plantas.dart';
+import 'package:libroscampo/models/controles.dart';
+import 'package:libroscampo/models/variables.dart';
 import 'package:libroscampo/repositories/plantas_repository.dart';
+import 'package:libroscampo/repositories/controles_repository.dart';
+import 'package:libroscampo/repositories/variables_repository.dart';
 import 'package:libroscampo/views/plantas/planta_list.dart';
 
 class PlantaFormView extends StatefulWidget {
@@ -25,6 +29,9 @@ class _PlantaFormViewState extends State<PlantaFormView> {
   final _formPlantaKey = GlobalKey<FormState>();
   final _nombreController = TextEditingController();
   final _descripcionController = TextEditingController();
+  final _controlNombreController = TextEditingController();
+  final List<String> _variables = ['Altura', 'Color de hoja', 'Nutrientes', 'Presencia de plagas', 'Cantidad de agua', 'Fecha de última poda'];
+  final List<String> _selectedVariables = [];
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +61,7 @@ class _PlantaFormViewState extends State<PlantaFormView> {
           },
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Form(
           key: _formPlantaKey,
@@ -98,6 +105,37 @@ class _PlantaFormViewState extends State<PlantaFormView> {
                 },
               ),
               SizedBox(height: 20),
+              TextFormField(
+                controller: _controlNombreController,
+                decoration: InputDecoration(
+                  labelText: 'Nombre del Control',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'El nombre del control es requerido';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 20),
+              Text('Selecciona las variables:'),
+              ..._variables.map((variable) {
+                return CheckboxListTile(
+                  title: Text(variable),
+                  value: _selectedVariables.contains(variable),
+                  onChanged: (bool? value) {
+                    setState(() {
+                      if (value == true) {
+                        _selectedVariables.add(variable);
+                      } else {
+                        _selectedVariables.remove(variable);
+                      }
+                    });
+                  },
+                );
+              }).toList(),
+              SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
                   if (_formPlantaKey.currentState!.validate()) {
@@ -107,8 +145,8 @@ class _PlantaFormViewState extends State<PlantaFormView> {
                         descripcion: _descripcionController.text,
                         fkidProyecto: widget.proyectoId,
                       );
-                      var result = await PlantasRepository().create(planta);
-                      if (result <= 0) {
+                      var plantaId = await PlantasRepository().create(planta);
+                      if (plantaId <= 0) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text('Error al agregar la planta ${i + 1}'),
@@ -117,10 +155,43 @@ class _PlantaFormViewState extends State<PlantaFormView> {
                         );
                         return;
                       }
+
+                      Control control = Control(
+                        fkidPlanta: plantaId,
+                        nombreControl: _controlNombreController.text, // Asegúrate de que este campo no sea nulo
+                        descripcion: _controlNombreController.text,
+                      );
+                      var controlId = await ControlesRepository().create(control);
+                      if (controlId <= 0) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Error al agregar el control para la planta ${i + 1}'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                        return;
+                      }
+
+                      for (String variable in _selectedVariables) {
+                        Variable newVariable = Variable(
+                          nombreVariable: variable,
+                          fkidControl: controlId,
+                        );
+                        var variableId = await VariablesRepository().create(newVariable);
+                        if (variableId <= 0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Error al agregar la variable $variable para la planta ${i + 1}'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          return;
+                        }
+                      }
                     }
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Plantas agregadas correctamente'),
+                        content: Text('Plantas, controles y variables agregadas correctamente'),
                         backgroundColor: Colors.green,
                       ),
                     );

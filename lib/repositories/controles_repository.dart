@@ -30,4 +30,14 @@ class ControlesRepository {
   Future<int> update(int id, Control control) async {
     return await DbConnection.update(tableName, control.toMap(), id);
   }
+
+  Future<void> addControl(Control control) async {
+    final db = await DbConnection.getDatabase();
+    await db.insert('Controles', control.toMap());
+  }
+
+  Future<void> deleteControl(int idControl) async {
+    final db = await DbConnection.getDatabase();
+    await db.delete('Controles', where: 'id_control = ?', whereArgs: [idControl]);
+  }
 }

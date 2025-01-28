@@ -68,6 +68,7 @@ class DbConnection {
         await db.execute("""
           CREATE TABLE Controles (
             id_control INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre_control TEXT NOT NULL,
             fecha_control DATE,
             descripcion TEXT,
             fkid_planta INTEGER NOT NULL,
@@ -76,12 +77,12 @@ class DbConnection {
         """),
 
         await db.execute("""
-          INSERT INTO Controles (fecha_control, descripcion, fkid_planta) VALUES
-          ('2025-01-06', 'Control de crecimiento inicial para Planta 1', 1),
-          ('2025-01-07', 'Control de nutrientes para Planta 1', 1),
-          ('2025-01-08', 'Control de plagas para Planta 2', 2),
-          ('2025-01-09', 'Control de riego para Planta 3', 3),
-          ('2025-01-10', 'Control de poda para Planta 4', 4)
+          INSERT INTO Controles (fecha_control,nombre_control, descripcion, fkid_planta) VALUES
+          ('2025-01-06','holas', 'Control de crecimiento inicial para Planta 1', 1),
+          ('2025-01-07','holas', 'Control de nutrientes para Planta 1', 1),
+          ('2025-01-08','holas', 'Control de plagas para Planta 2', 2),
+          ('2025-01-09','holas', 'Control de riego para Planta 3', 3),
+          ('2025-01-10','holas', 'Control de poda para Planta 4', 4)
         """),
 
         await db.execute("""
@@ -145,7 +146,7 @@ class DbConnection {
     final db = await getDatabase();
     return db.update(tableName, 
       data,
-      where: "id=?",
+      where: "id_variable = ?", // Cambia "id" a "id_variable"
       whereArgs: [id],
       conflictAlgorithm: ConflictAlgorithm.replace
     );

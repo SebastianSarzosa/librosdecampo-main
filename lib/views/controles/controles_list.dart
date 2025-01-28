@@ -71,7 +71,6 @@ class ControlesListView extends StatelessWidget {
                   ),
                   trailing: Icon(Icons.arrow_forward_ios, color: Colors.teal),
                    onTap: () {
-                      // Navegar a la pantalla de proyectos
                       Navigator.push(
                         context,
                         MaterialPageRoute(
