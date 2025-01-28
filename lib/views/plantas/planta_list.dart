@@ -6,8 +6,12 @@ import 'package:libroscampo/views/controles/controles_list.dart';
 class PlantaListView extends StatelessWidget {
   final int proyectoId;
   final String proyectoNombre;
+  final String userRole;
+  final String userName;   // Asegúrate de que este campo sea final
 
-  const PlantaListView({Key? key, required this.proyectoId, required this.proyectoNombre}) : super(key: key);
+  const PlantaListView({
+    required this.proyectoId, required this.proyectoNombre, required this.userRole, required this.userName
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +30,7 @@ class PlantaListView extends StatelessWidget {
             Navigator.pushReplacementNamed(
               context,
               '/proyecto/index',
-              arguments: {'libroId': proyectoId, 'libroNombre': proyectoNombre,'userRole': 'admin'},
+              arguments: {'libroId': proyectoId, 'libroNombre': proyectoNombre,'userRole': userRole,'userName': userName},
             );
           },
         ),
@@ -102,7 +106,7 @@ class PlantaListView extends StatelessWidget {
           Navigator.pushNamed(
             context,
             '/planta/numero',
-            arguments: {'proyectoId': proyectoId, 'proyectoNombre': proyectoNombre},
+            arguments: {'proyectoId': proyectoId, 'proyectoNombre': proyectoNombre, 'userRole': userRole, 'userName': userName},
           );
         },
         backgroundColor: Colors.green,

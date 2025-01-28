@@ -38,15 +38,15 @@ class MyApp extends StatelessWidget {
         },
         '/planta/index': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-          return PlantaListView(proyectoId: args['proyectoId'], proyectoNombre: args['proyectoNombre'],);
+          return PlantaListView(proyectoId: args['proyectoId'], proyectoNombre: args['proyectoNombre'], userRole: args['userRole'],userName: args['userName']);
         },
         '/planta/form': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-          return PlantaFormView(proyectoId: args['proyectoId'], numeroPlantas: args['numeroPlantas'], proyectoNombre: args['proyectoNombre']);
+          return PlantaFormView(proyectoId: args['proyectoId'], numeroPlantas: args['numeroPlantas'], proyectoNombre: args['proyectoNombre'], userRole: args['userRole'],userName: args['userName']);
         },
         '/planta/numero': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-          return NumeroPlantasForm(proyectoId: args['proyectoId'], proyectoNombre: args['proyectoNombre']);
+          return NumeroPlantasForm(proyectoId: args['proyectoId'], proyectoNombre: args['proyectoNombre'], userRole: args['userRole'],userName: args['userName']);
         },
       },
     );

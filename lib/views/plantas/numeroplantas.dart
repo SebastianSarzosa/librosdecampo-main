@@ -4,8 +4,11 @@ import 'package:libroscampo/views/plantas/planta_form.dart';
 class NumeroPlantasForm extends StatefulWidget {
   final int proyectoId;
   final String proyectoNombre;
-
-  NumeroPlantasForm({required this.proyectoId,required this.proyectoNombre});
+  final String userRole; // Asegúrate de que este campo sea final
+  final String userName; // Añade el campo userName
+  NumeroPlantasForm({
+    required this.proyectoId,required this.proyectoNombre,required this.userRole,required this.userName
+  });
 
   @override
   _NumeroPlantasFormState createState() => _NumeroPlantasFormState();
@@ -24,6 +27,19 @@ class _NumeroPlantasFormState extends State<NumeroPlantasForm> {
         ),
         foregroundColor: Colors.white,
         backgroundColor: Colors.green,
+       leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/planta/index',
+              arguments: {
+                'proyectoId': widget.proyectoId,
+                'proyectoNombre': widget.proyectoNombre,
+                'userRole': widget.userRole,
+                'userName': widget.userName,
+              },
+            );
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -60,6 +76,8 @@ class _NumeroPlantasFormState extends State<NumeroPlantasForm> {
                           proyectoId: widget.proyectoId,
                           numeroPlantas: numeroPlantas,
                           proyectoNombre: widget.proyectoNombre,
+                          userRole: widget.userRole,
+                          userName: widget.userName,
                         ),
                       ),
                     );

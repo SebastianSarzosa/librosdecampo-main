@@ -8,8 +8,11 @@ class PlantaFormView extends StatefulWidget {
   final int proyectoId;
   final int numeroPlantas;
   final String proyectoNombre;
-
-  PlantaFormView({required this.proyectoId, required this.numeroPlantas,required this.proyectoNombre});
+  final String userRole; // Asegúrate de que este campo sea final
+  final String userName; // Añade el campo userName
+  PlantaFormView({
+    required this.proyectoId, required this.numeroPlantas,required this.proyectoNombre,required this.userRole,required this.userName
+  });
 
   @override
   State<PlantaFormView> createState() => _PlantaFormViewState();
@@ -29,6 +32,21 @@ class _PlantaFormViewState extends State<PlantaFormView> {
         ),
         foregroundColor: Colors.white,
         backgroundColor: Colors.green,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacementNamed(
+              context,
+              '/planta/index',
+              arguments: {
+                'proyectoId': widget.proyectoId,
+                'proyectoNombre': widget.proyectoNombre,
+                'userRole': widget.userRole,
+                'userName': widget.userName,
+              },
+            );
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -103,7 +121,8 @@ class _PlantaFormViewState extends State<PlantaFormView> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PlantaListView(proyectoId: widget.proyectoId,proyectoNombre: widget.proyectoNombre),
+                        builder: (context) => PlantaListView(
+                          proyectoId: widget.proyectoId,proyectoNombre: widget.proyectoNombre, userRole:widget.userRole , userName: widget.userName),
                       ),
                     );
                   }

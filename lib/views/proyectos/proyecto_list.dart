@@ -83,7 +83,9 @@ class ProyectoListView extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => PlantaListView(proyectoId: proyecto.idProyecto!, proyectoNombre: proyecto.nombreProyecto),
+                          builder: (context) => PlantaListView(
+                            proyectoId: proyecto.idProyecto!, proyectoNombre: proyecto.nombreProyecto, userRole: userRole, userName: userName
+                          ),
                         ),
                       );
                     },
