@@ -6,8 +6,11 @@ class NumeroPlantasForm extends StatefulWidget {
   final String proyectoNombre;
   final String userRole; // Asegúrate de que este campo sea final
   final String userName; // Añade el campo userName
+  final int libroId; // Añade el campo libroId
+  final String libroNombre; // Añade el campo libroNombre
+
   NumeroPlantasForm({
-    required this.proyectoId,required this.proyectoNombre,required this.userRole,required this.userName
+    required this.proyectoId,required this.proyectoNombre,required this.userRole,required this.userName,required this.libroId,required this.libroNombre
   });
 
   @override
@@ -36,6 +39,8 @@ class _NumeroPlantasFormState extends State<NumeroPlantasForm> {
                 'proyectoNombre': widget.proyectoNombre,
                 'userRole': widget.userRole,
                 'userName': widget.userName,
+                'libroId': widget.libroId,
+                'libroNombre': widget.libroNombre,
               },
             );
           },
@@ -78,6 +83,8 @@ class _NumeroPlantasFormState extends State<NumeroPlantasForm> {
                           proyectoNombre: widget.proyectoNombre,
                           userRole: widget.userRole,
                           userName: widget.userName,
+                          libroId: widget.libroId,
+                          libroNombre: widget.libroNombre,
                         ),
                       ),
                     );

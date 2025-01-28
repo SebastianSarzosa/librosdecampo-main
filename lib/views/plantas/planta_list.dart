@@ -8,9 +8,11 @@ class PlantaListView extends StatelessWidget {
   final String proyectoNombre;
   final String userRole;
   final String userName;   // Asegúrate de que este campo sea final
+  final int libroId; // Añade el campo libroId
+  final String libroNombre; // Añade el campo libroNombre
 
   const PlantaListView({
-    required this.proyectoId, required this.proyectoNombre, required this.userRole, required this.userName
+    required this.proyectoId, required this.proyectoNombre, required this.userRole, required this.userName, required this.libroId, required this.libroNombre
   });
 
   @override
@@ -30,7 +32,14 @@ class PlantaListView extends StatelessWidget {
             Navigator.pushReplacementNamed(
               context,
               '/proyecto/index',
-              arguments: {'libroId': proyectoId, 'libroNombre': proyectoNombre,'userRole': userRole,'userName': userName},
+              arguments: {
+                'libroId': libroId, 
+                'libroNombre': libroNombre, 
+                'userRole': userRole, 
+                'userName': userName,
+                'libroId': libroId,
+                'libroNombre': libroNombre,
+              },
             );
           },
         ),
@@ -106,7 +115,14 @@ class PlantaListView extends StatelessWidget {
           Navigator.pushNamed(
             context,
             '/planta/numero',
-            arguments: {'proyectoId': proyectoId, 'proyectoNombre': proyectoNombre, 'userRole': userRole, 'userName': userName},
+            arguments: {
+              'proyectoId': proyectoId, 
+              'proyectoNombre': proyectoNombre, 
+              'userRole': userRole, 
+              'userName': userName,
+              'libroId': libroId,
+              'libroNombre': libroNombre,
+            },
           );
         },
         backgroundColor: Colors.green,

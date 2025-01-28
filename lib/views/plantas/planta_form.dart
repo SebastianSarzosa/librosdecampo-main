@@ -10,8 +10,11 @@ class PlantaFormView extends StatefulWidget {
   final String proyectoNombre;
   final String userRole; // Asegúrate de que este campo sea final
   final String userName; // Añade el campo userName
+  final int libroId; // Añade el campo libroId
+  final String libroNombre; // Añade el campo libroNombre
+  
   PlantaFormView({
-    required this.proyectoId, required this.numeroPlantas,required this.proyectoNombre,required this.userRole,required this.userName
+    required this.proyectoId, required this.numeroPlantas,required this.proyectoNombre,required this.userRole,required this.userName,required this.libroId,required this.libroNombre
   });
 
   @override
@@ -43,6 +46,9 @@ class _PlantaFormViewState extends State<PlantaFormView> {
                 'proyectoNombre': widget.proyectoNombre,
                 'userRole': widget.userRole,
                 'userName': widget.userName,
+                'libroId': widget.libroId,
+                'libroNombre': widget.libroNombre,  
+
               },
             );
           },
@@ -122,7 +128,12 @@ class _PlantaFormViewState extends State<PlantaFormView> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => PlantaListView(
-                          proyectoId: widget.proyectoId,proyectoNombre: widget.proyectoNombre, userRole:widget.userRole , userName: widget.userName),
+                          proyectoId: widget.proyectoId,
+                          proyectoNombre: widget.proyectoNombre, 
+                          userRole:widget.userRole , 
+                          userName: widget.userName, 
+                          libroId: widget.libroId, 
+                          libroNombre: widget.libroNombre),
                       ),
                     );
                   }

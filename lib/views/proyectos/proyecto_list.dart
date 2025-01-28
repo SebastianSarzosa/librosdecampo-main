@@ -29,8 +29,7 @@ class ProyectoListView extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pushReplacementNamed(context, '/libro/index', 
-            arguments: {'userRole': userRole, 'userName': userName
-            }); // Regresar a la pantalla de libros
+            arguments: {'userRole': userRole, 'userName': userName}); // Regresar a la pantalla de libros
           },
         ),
       ),
@@ -84,7 +83,7 @@ class ProyectoListView extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => PlantaListView(
-                            proyectoId: proyecto.idProyecto!, proyectoNombre: proyecto.nombreProyecto, userRole: userRole, userName: userName
+                            proyectoId: proyecto.idProyecto!, proyectoNombre: proyecto.nombreProyecto, userRole: userRole, userName: userName, libroId: libroId, libroNombre: libroNombre
                           ),
                         ),
                       );

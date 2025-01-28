@@ -38,15 +38,15 @@ class MyApp extends StatelessWidget {
         },
         '/planta/index': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-          return PlantaListView(proyectoId: args['proyectoId'], proyectoNombre: args['proyectoNombre'], userRole: args['userRole'],userName: args['userName']);
+          return PlantaListView(proyectoId: args['proyectoId'], proyectoNombre: args['proyectoNombre'], userRole: args['userRole'],userName: args['userName'],  libroId: args['libroId'], libroNombre: args['libroNombre']);
         },
         '/planta/form': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-          return PlantaFormView(proyectoId: args['proyectoId'], numeroPlantas: args['numeroPlantas'], proyectoNombre: args['proyectoNombre'], userRole: args['userRole'],userName: args['userName']);
+          return PlantaFormView(proyectoId: args['proyectoId'], numeroPlantas: args['numeroPlantas'], proyectoNombre: args['proyectoNombre'], userRole: args['userRole'],userName: args['userName'], libroId: args['libroId'], libroNombre: args['libroNombre']);
         },
         '/planta/numero': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-          return NumeroPlantasForm(proyectoId: args['proyectoId'], proyectoNombre: args['proyectoNombre'], userRole: args['userRole'],userName: args['userName']);
+          return NumeroPlantasForm(proyectoId: args['proyectoId'], proyectoNombre: args['proyectoNombre'], userRole: args['userRole'],userName: args['userName'], libroId: args['libroId'], libroNombre: args['libroNombre']);
         },
       },
     );
