@@ -30,6 +30,7 @@ class _PlantaFormViewState extends State<PlantaFormView> {
   final _nombreController = TextEditingController();
   final _descripcionController = TextEditingController();
   final _controlNombreController = TextEditingController();
+  final _fechaControlController = TextEditingController(text: DateTime.now().toString().split(' ')[0]); // Establece la fecha actual por defecto
   final List<String> _variables = ['Altura', 'Color de hoja', 'Nutrientes', 'Presencia de plagas', 'Cantidad de agua', 'Fecha de última poda'];
   final List<String> _selectedVariables = [];
 
@@ -119,6 +120,35 @@ class _PlantaFormViewState extends State<PlantaFormView> {
                 },
               ),
               SizedBox(height: 20),
+              TextFormField(
+                controller: _fechaControlController,
+                decoration: InputDecoration(
+                  labelText: 'Fecha de Inicio del Control',
+                  border: OutlineInputBorder(),
+                ),
+                readOnly: true,
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2101),
+                  );
+                  if (pickedDate != null) {
+                    String formattedDate = pickedDate.toString().split(' ')[0];
+                    setState(() {
+                      _fechaControlController.text = formattedDate;
+                    });
+                  }
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'La fecha de inicio del control es requerida';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 20),
               Text('Selecciona las variables:'),
               ..._variables.map((variable) {
                 return CheckboxListTile(
@@ -160,6 +190,7 @@ class _PlantaFormViewState extends State<PlantaFormView> {
                         fkidPlanta: plantaId,
                         nombreControl: _controlNombreController.text, // Asegúrate de que este campo no sea nulo
                         descripcion: _controlNombreController.text,
+                        fechaControl: _fechaControlController.text,
                       );
                       var controlId = await ControlesRepository().create(control);
                       if (controlId <= 0) {

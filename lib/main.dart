@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:libroscampo/bienvenido.dart';
-import 'package:libroscampo/menu.dart';
 import 'package:libroscampo/views/librosdecampo/libro_list.dart';
 import 'package:libroscampo/views/login.dart';
 import 'package:libroscampo/views/proyectos/proyecto_form.dart';
@@ -8,6 +7,7 @@ import 'package:libroscampo/views/proyectos/proyecto_list.dart';
 import 'package:libroscampo/views/plantas/planta_form.dart';
 import 'package:libroscampo/views/plantas/planta_list.dart';
 import 'package:libroscampo/views/plantas/numeroplantas.dart';
+import 'package:libroscampo/views/controles/controles_form.dart';
 
 void main() => runApp(MyApp());
 
@@ -47,6 +47,17 @@ class MyApp extends StatelessWidget {
         '/planta/numero': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
           return NumeroPlantasForm(proyectoId: args['proyectoId'], proyectoNombre: args['proyectoNombre'], userRole: args['userRole'],userName: args['userName'], libroId: args['libroId'], libroNombre: args['libroNombre']);
+        },
+        '/control/form': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          return ControlFormView(
+            proyectoId: args['proyectoId'],
+            proyectoNombre: args['proyectoNombre'],
+            userRole: args['userRole'],
+            userName: args['userName'],
+            libroId: args['libroId'],
+            libroNombre: args['libroNombre'],
+          );
         },
       },
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:libroscampo/models/plantas.dart';
 import 'package:libroscampo/repositories/plantas_repository.dart';
 import 'package:libroscampo/views/controles/controles_list.dart';
+import 'package:libroscampo/views/controles/controles_form.dart';
 
 class PlantaListView extends StatelessWidget {
   final int proyectoId;
@@ -110,26 +111,56 @@ class PlantaListView extends StatelessWidget {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(
-            context,
-            '/planta/numero',
-            arguments: {
-              'proyectoId': proyectoId, 
-              'proyectoNombre': proyectoNombre, 
-              'userRole': userRole, 
-              'userName': userName,
-              'libroId': libroId,
-              'libroNombre': libroNombre,
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            heroTag: 'addPlanta', // Etiqueta única
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                '/planta/numero',
+                arguments: {
+                  'proyectoId': proyectoId, 
+                  'proyectoNombre': proyectoNombre, 
+                  'userRole': userRole, 
+                  'userName': userName,
+                  'libroId': libroId,
+                  'libroNombre': libroNombre,
+                },
+              );
             },
-          );
-        },
-        backgroundColor: Colors.green,
-        child: Icon(
-          color: const Color.fromARGB(255, 250, 250, 250),
-          Icons.add
-        ),
+            backgroundColor: Colors.green,
+            child: Icon(
+              color: const Color.fromARGB(255, 250, 250, 250),
+              Icons.add
+            ),
+          ),
+          SizedBox(height: 10),
+          FloatingActionButton(
+            heroTag: 'addControl', // Etiqueta única
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ControlFormView(
+                    proyectoId: proyectoId,
+                    proyectoNombre: proyectoNombre,
+                    userRole: userRole,
+                    userName: userName,
+                    libroId: libroId,
+                    libroNombre: libroNombre,
+                  ),
+                ),
+              );
+            },
+            backgroundColor: Colors.blue,
+            child: Icon(
+              color: const Color.fromARGB(255, 250, 250, 250),
+              Icons.control_point,
+            ),
+          ),
+        ],
       ),
     );
   }

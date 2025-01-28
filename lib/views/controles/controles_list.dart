@@ -55,7 +55,7 @@ class ControlesListView extends StatelessWidget {
                   contentPadding: EdgeInsets.all(16.0),
                   leading: Icon(Icons.check_circle, size: 40, color: Colors.teal),
                   title: Text(
-                    control.descripcion.toString(),
+                    control.nombreControl, // Asegúrate de que este campo se muestre correctamente
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -63,7 +63,7 @@ class ControlesListView extends StatelessWidget {
                     ),
                   ),
                   subtitle: Text(
-                    'id: ${control.idControl}',
+                    'Fecha de inicio: ${control.fechaControl}\nID: ${control.idControl}',
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey[600],

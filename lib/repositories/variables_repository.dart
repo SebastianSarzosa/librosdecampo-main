@@ -1,6 +1,5 @@
 import 'package:libroscampo/models/variables.dart';
 import 'package:libroscampo/settings/db.connection.dart';
-
 class VariablesRepository {
   final String tableName = 'Variables';
 
@@ -16,10 +15,39 @@ class VariablesRepository {
 
   // Método para listar variables por ID de control
   Future<List<Variable>> listVariablesByControl(int controlId) async {
-    final List<Map<String, dynamic>> maps = await DbConnection.filter(tableName, 'fkid_control = ?', [controlId]);
+    final db = await DbConnection.getDatabase();
+    final List<Map<String, dynamic>> maps = await db.query(
+      tableName,
+      where: 'fkid_control = ?',
+      whereArgs: [controlId],
+    );
+
+    if (maps.isEmpty) {
+      return [];
+    }
+
     return List.generate(maps.length, (i) {
       return Variable.fromMap(maps[i]);
     });
+  }
+
+  // Método para listar variables por el primer control de una planta
+  Future<List<Variable>> listVariablesByFirstControlOfPlant(int plantaId) async {
+    final db = await DbConnection.getDatabase();
+    final List<Map<String, dynamic>> controlMaps = await db.query(
+      'Controles',
+      where: 'fkid_planta = ?',
+      whereArgs: [plantaId],
+      orderBy: 'fecha_control ASC',
+      limit: 1,
+    );
+
+    if (controlMaps.isEmpty) {
+      return [];
+    }
+
+    final int firstControlId = controlMaps.first['id_control'];
+    return listVariablesByControl(firstControlId);
   }
 
   // Método para eliminar una variable por ID
