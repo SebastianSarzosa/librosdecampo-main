@@ -10,7 +10,8 @@ class ProyectoFormView extends StatefulWidget {
   final int libroId; // Recibe el ID del libro seleccionado
   final String libroNombre; // Recibe el nombre del libro seleccionado
   final String userRole; // Recibe el rol del usuario
-  ProyectoFormView({required this.libroId, required this.libroNombre,required this.userRole});
+  final String userName; // Añade el campo userName
+  ProyectoFormView({required this.libroId, required this.libroNombre,required this.userRole,required this.userName});
 
   @override
   State<ProyectoFormView> createState() => _ProyectoFormViewState();
@@ -46,6 +47,21 @@ class _ProyectoFormViewState extends State<ProyectoFormView> {
         ),
         foregroundColor: Colors.white,
         backgroundColor: Colors.green,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacementNamed(
+              context,
+              '/proyecto/index',
+              arguments: {
+                'libroId': widget.libroId,
+                'libroNombre': widget.libroNombre,
+                'userRole': widget.userRole,
+                'userName': widget.userName,
+              },
+            );
+          },
+        ),
         
       ),
       body: Padding(
@@ -126,8 +142,12 @@ class _ProyectoFormViewState extends State<ProyectoFormView> {
                             Navigator.pushNamed(
                               context,
                               '/proyecto/index',
-                              arguments: {'libroId': widget.libroId,
-                              'libroNombre': widget.libroNombre,'userRole': widget.userRole},
+                              arguments: {
+                                'libroId': widget.libroId,
+                                'libroNombre': widget.libroNombre,
+                                'userRole': widget.userRole,
+                                'userName': widget.userName,
+                              },
                         
                             );
                           } else {
@@ -155,7 +175,12 @@ class _ProyectoFormViewState extends State<ProyectoFormView> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ProyectoListView(libroId: widget.libroId,libroNombre: widget.libroNombre,userRole: widget.userRole,),
+                            builder: (context) => ProyectoListView(
+                              libroId: widget.libroId,
+                              libroNombre: widget.libroNombre,
+                              userRole: widget.userRole,
+                              userName: widget.userName,
+                            ),
                           ),
                         );
                       },

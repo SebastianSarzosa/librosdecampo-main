@@ -14,6 +14,12 @@ class Bienvenido extends StatelessWidget {
         title: const Text('PLANT'),
         backgroundColor: Colors.green,
         foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.exit_to_app),
+          onPressed: () {
+            Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false); // Ir a la pantalla de inicio de sesión
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -56,12 +62,7 @@ class Bienvenido extends StatelessWidget {
           if (index == 0) {
             Navigator.popUntil(context, ModalRoute.withName('/bienvenido')); // Ir a la pantalla de inicio
           } else if (index == 1) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => LibroListView(userRole: userRole), // Pasa el userRole aquí
-              ),
-            ); // Ir a la pantalla de la lista de libros
+            Navigator.pushNamed(context, '/libro/index',arguments: {'userRole': userRole, 'userName': userName}); // Ir a la lista de libros
           }
         },
       ),

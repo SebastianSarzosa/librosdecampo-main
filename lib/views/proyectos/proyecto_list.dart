@@ -7,9 +7,9 @@ class ProyectoListView extends StatelessWidget {
   final int libroId;
   final String libroNombre;
   final String userRole;  // Asegúrate de que este campo sea final
+  final String userName; // Añade el campo userName
 
-
-  ProyectoListView({required this.libroId, required this.libroNombre, required this.userRole});
+  ProyectoListView({required this.libroId, required this.libroNombre, required this.userRole,required this.userName});
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +28,9 @@ class ProyectoListView extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pushReplacementNamed(
-              context,
-              '/libro/index',
-              arguments: {'userRole': userRole},
-            );
+            Navigator.pushReplacementNamed(context, '/libro/index', 
+            arguments: {'userRole': userRole, 'userName': userName
+            }); // Regresar a la pantalla de libros
           },
         ),
       ),
@@ -101,7 +99,12 @@ class ProyectoListView extends StatelessWidget {
             Navigator.pushNamed(
               context,
               '/proyecto/form',
-              arguments: {'libroId': libroId, 'libroNombre': libroNombre, 'userRole': userRole}
+              arguments: {
+                'libroId': libroId, 
+                'libroNombre': libroNombre, 
+                'userRole': userRole, 
+                'userName': userName
+              },
             );
           },
           backgroundColor: Colors.green,
