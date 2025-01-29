@@ -38,8 +38,7 @@ class PlantaListView extends StatelessWidget {
                 'libroNombre': libroNombre, 
                 'userRole': userRole, 
                 'userName': userName,
-                'libroId': libroId,
-                'libroNombre': libroNombre,
+                  
               },
             );
           },
@@ -159,6 +158,7 @@ class PlantaListView extends StatelessWidget {
               color: const Color.fromARGB(255, 250, 250, 250),
               Icons.control_point,
             ),
+            
           ),
         ],
       ),

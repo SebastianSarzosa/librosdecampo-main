@@ -143,37 +143,8 @@ class _ControlFormViewState extends State<ControlFormView> {
                       },
                     );
                   }).toList(),
-                  SizedBox(height: 20),
-                  ..._selectedPlantas.expand((plantaId) {
-                    final variables = _plantVariables[plantaId] ?? [];
-                    return variables.map((variable) {
-                      return ListTile(
-                        title: Text(variable.nombreVariable),
-                        subtitle: Text('Valor: ${variable.valorTexto ?? variable.valorNumerico ?? variable.valorFecha}'),
-                      );
-                    }).toList();
-                  }).toList(),
-                  SizedBox(height: 20),
-                  Text('Agregar nuevos valores para las variables:'),
-                  ..._selectedPlantas.map((plantaId) {
-                    return Column(
-                      children: [
-                        Text('Planta ID: $plantaId'),
-                        ...(_newVariables[plantaId] ?? []).map((variable) {
-                          return ListTile(
-                            title: Text(variable.nombreVariable),
-                            subtitle: TextFormField(
-                              initialValue: variable.valorTexto,
-                              decoration: InputDecoration(labelText: 'Nuevo valor de la Variable'),
-                              onChanged: (value) {
-                                variable.valorTexto = value;
-                              },
-                            ),
-                          );
-                        }).toList(),
-                      ],
-                    );
-                  }).toList(),
+                  
+                  
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () async {
