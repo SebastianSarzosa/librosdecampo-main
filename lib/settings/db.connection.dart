@@ -59,10 +59,7 @@ class DbConnection {
 
         await db.execute("""
           INSERT INTO Plantas (nombre_planta, nombre_cientifico, fkid_proyecto) VALUES
-          ('Planta 1', 'Plantae Scientifica 1', 1),
-          ('Planta 2', 'Plantae Scientifica 2', 1),
-          ('Planta 3', 'Plantae Scientifica 3', 2),
-          ('Planta 4', 'Plantae Scientifica 4', 3)
+          ('Planta 1', 'Plantae Scientifica 1', 1)
         """),
 
         await db.execute("""
@@ -78,11 +75,10 @@ class DbConnection {
 
         await db.execute("""
           INSERT INTO Controles (fecha_control,nombre_control, descripcion, fkid_planta) VALUES
-          ('2025-01-06','holas', 'Control de crecimiento inicial para Planta 1', 1),
-          ('2025-01-07','holas', 'Control de nutrientes para Planta 1', 1),
-          ('2025-01-08','holas', 'Control de plagas para Planta 2', 2),
-          ('2025-01-09','holas', 'Control de riego para Planta 3', 3),
-          ('2025-01-10','holas', 'Control de poda para Planta 4', 4)
+          ('2025-02-05','holas1', 'Control de crecimiento inicial para Planta 1', 1),
+          ('2025-02-10','holas2', 'Control de crecimiento inicial para Planta 1', 1),
+          ('2025-02-15','holas3', 'Control de crecimiento inicial para Planta 1', 1)
+          
         """),
 
         await db.execute("""
@@ -100,11 +96,8 @@ class DbConnection {
         await db.execute("""
           INSERT INTO Variables (nombre_variable, valor_texto, valor_numerico, valor_fecha, fkid_control) VALUES
           ('Altura', NULL, 15.5, NULL, 1),
-          ('Color de hoja', 'Verde claro', NULL, NULL, 1),
-          ('Nutrientes', 'Alto contenido de Nitrógeno', NULL, NULL, 2),
-          ('Presencia de plagas', 'Ninguna', NULL, NULL, 3),
-          ('Cantidad de agua', NULL, 2.5, NULL, 4),
-          ('Fecha de última poda', NULL, NULL, '2025-01-10', 5)
+          ('Altura', NULL, 20.5, NULL, 2),
+          ('Altura', NULL, 25.5, NULL, 3)
         """),
 
          await db.execute("""
@@ -130,23 +123,23 @@ class DbConnection {
 
     
   } 
-  //insert : mandar datos y se crea solo el insert 
+  
   static Future<int> insert(String tableName, dynamic data) async{
-    final db = await getDatabase(); //tableName nombre de la tabla ejem pacientes,medicame,dep
+    final db = await getDatabase(); 
     return db.insert(tableName, data, conflictAlgorithm: ConflictAlgorithm.replace);     
   }
-  //rowInsert : mandar un paramaetro con el insert into
-  static Future<int> insertSql(String,sql) async {
+  
+  static Future<int> insertSql(String sql) async {
     final db=await getDatabase();
     return db.rawInsert(sql);
   }
 
-  //FUNCIONES DE ACTUALIZACION DE DATOS
+  
   static Future<int> update(String tableName, dynamic data, int id) async{
     final db = await getDatabase();
     return db.update(tableName, 
       data,
-      where: "id_variable = ?", // Cambia "id" a "id_variable"
+      where: "id_variable = ?", 
       whereArgs: [id],
       conflictAlgorithm: ConflictAlgorithm.replace
     );
@@ -157,7 +150,7 @@ class DbConnection {
     return db.rawUpdate(sql);
     
   }
-  //Funcion delete
+  
 
   static Future<int> delete(String tableName, int id) async{
     final db = await getDatabase();
@@ -172,13 +165,13 @@ class DbConnection {
     return db.rawDelete(sql);
   }
 
-  //FUNCION LISTAR
+  
 
   static Future <List<Map<String, dynamic>>> list(String tableName) async{
-    final db=await getDatabase(); //base de datos
-    return await db.query(tableName); //select * form y el table muestra toda la tabla  
+    final db=await getDatabase(); 
+    return await db.query(tableName);   
   }
-  ///select * from ---- where ..... cndition
+  
   static Future <List<Map<String, dynamic>>> filter(String tableName, String where, dynamic whereArgs) async{
     final db=await getDatabase(); 
     return await db.query(
@@ -187,10 +180,10 @@ class DbConnection {
       whereArgs: whereArgs
     );   
   }
-  //enviar tal cual el sql
-  static Future<List<Map<String, dynamic>>> selectSql(String sql) async{
+  
+  static Future<List<Map<String, dynamic>>> selectSql(String sql, List<dynamic> args) async{
     final db=await getDatabase();
-    return db.rawQuery(sql);
+    return db.rawQuery(sql, args);
   }
 
   // Método para insertar un usuario

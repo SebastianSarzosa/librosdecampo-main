@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:libroscampo/bienvenido.dart';
+import 'package:libroscampo/dashboard.dart';
 import 'package:libroscampo/views/librosdecampo/libro_list.dart';
 import 'package:libroscampo/views/login.dart';
 import 'package:libroscampo/views/proyectos/proyecto_form.dart';
@@ -23,6 +24,10 @@ class MyApp extends StatelessWidget {
         '/bienvenido': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
           return Bienvenido(userRole: args['userRole'] , userName: args['userName']);
+        },
+        '/dashboard/index': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          return Dashboard(userRole: args['userRole'], userName: args['userName']);
         },
         '/libro/index': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;

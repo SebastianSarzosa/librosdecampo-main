@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:libroscampo/views/librosdecampo/libro_list.dart'; // Asegúrate de importar la vista de lista de libros
 
 class Bienvenido extends StatelessWidget {
   final String userRole; // Añade el campo userRole
@@ -27,7 +26,7 @@ class Bienvenido extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'BIENVENIDO $userName',
+              'Bienvenido $userName',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
@@ -52,6 +51,10 @@ class Bienvenido extends StatelessWidget {
             label: 'Home',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard),
+            label: 'Dashboard',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.book),
             label: 'Libros de Campo',
           ),
@@ -62,6 +65,8 @@ class Bienvenido extends StatelessWidget {
           if (index == 0) {
             Navigator.popUntil(context, ModalRoute.withName('/bienvenido')); // Ir a la pantalla de inicio
           } else if (index == 1) {
+            Navigator.pushNamed(context, '/dashboard/index', arguments: {'userRole': userRole, 'userName': userName}); // Ir a dashboard
+          } else if (index == 2) {
             Navigator.pushNamed(context, '/libro/index',arguments: {'userRole': userRole, 'userName': userName}); // Ir a la lista de libros
           }
         },
