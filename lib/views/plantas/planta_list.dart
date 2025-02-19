@@ -4,7 +4,7 @@ import 'package:libroscampo/repositories/plantas_repository.dart';
 import 'package:libroscampo/views/controles/controles_list.dart';
 import 'package:libroscampo/views/controles/controles_form.dart';
 
-class PlantaListView extends StatelessWidget {
+class PlantaListView extends StatefulWidget {
   final int proyectoId;
   final String proyectoNombre;
   final String userRole;
@@ -17,9 +17,49 @@ class PlantaListView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final PlantasRepository plantasRepository = PlantasRepository();
+  _PlantaListViewState createState() => _PlantaListViewState();
+}
 
+class _PlantaListViewState extends State<PlantaListView> {
+  final PlantasRepository plantasRepository = PlantasRepository();
+  List<Planta> plantasList = [];
+  List<Planta> filteredPlantasList = [];
+  TextEditingController searchController = TextEditingController();
+  bool showFloatingButtons = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPlantas();
+    searchController.addListener(_filterPlantas);
+  }
+
+  void _fetchPlantas() async {
+    final plantas = await plantasRepository.listPlantsByProject(widget.proyectoId);
+    setState(() {
+      plantasList = plantas;
+      filteredPlantasList = plantas;
+    });
+  }
+
+  void _filterPlantas() {
+    final query = searchController.text.toLowerCase();
+    setState(() {
+      filteredPlantasList = plantasList.where((planta) {
+        return planta.nombrePlanta.toLowerCase().contains(query) ||
+               (planta.descripcion?.toLowerCase().contains(query) ?? false);
+      }).toList();
+    });
+  }
+
+  void _toggleFloatingButtons() {
+    setState(() {
+      showFloatingButtons = !showFloatingButtons;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Plantas del Proyecto",
@@ -34,131 +74,166 @@ class PlantaListView extends StatelessWidget {
               context,
               '/proyecto/index',
               arguments: {
-                'libroId': libroId, 
-                'libroNombre': libroNombre, 
-                'userRole': userRole, 
-                'userName': userName,
-                  
+                'libroId': widget.libroId, 
+                'libroNombre': widget.libroNombre, 
+                'userRole': widget.userRole, 
+                'userName': widget.userName,
               },
             );
           },
         ),
       ),
-      body: FutureBuilder<List<Planta>>(
-        future: plantasRepository.listPlantsByProject(proyectoId),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}', style: TextStyle(color: Colors.red)));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No hay plantas disponibles', style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic)));
-          }
-
-          final plantas = snapshot.data!;
-
-          return ListView.builder(
+      body: Column(
+        children: [
+          Padding(
             padding: const EdgeInsets.all(8.0),
-            itemCount: plantas.length + 1, // +1 para incluir el texto antes de los cards
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Proyecto. $proyectoNombre',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            child: TextField(
+              controller: searchController,
+              decoration: InputDecoration(
+                labelText: 'Buscar plantas',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.search),
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(8.0),
+              itemCount: filteredPlantasList.length + 1, // +1 para incluir el texto antes de los cards
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Proyecto. ${widget.proyectoNombre}',
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                  );
+                }
+                final planta = filteredPlantasList[index - 1];
+                return Card(
+                  elevation: 5,
+                  margin: EdgeInsets.symmetric(vertical: 8.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.all(16.0),
+                    leading: Icon(Icons.local_florist, size: 40, color: Colors.teal),
+                    title: Text(
+                      planta.nombrePlanta,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.teal,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Descripción: ${planta.descripcion}',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    trailing: Icon(Icons.arrow_forward_ios, color: Colors.teal),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ControlesListView(plantaId: planta.idPlanta!),
+                        ),
+                      );
+                    }
                   ),
                 );
-              }
-              final planta = plantas[index - 1];
-              return Card(
-                elevation: 5,
-                margin: EdgeInsets.symmetric(vertical: 8.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: ListTile(
-                  contentPadding: EdgeInsets.all(16.0),
-                  leading: Icon(Icons.local_florist, size: 40, color: Colors.teal),
-                  title: Text(
-                    planta.nombrePlanta,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.teal,
-                    ),
-                  ),
-                  subtitle: Text(
-                    'Descripción: ${planta.descripcion}',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  trailing: Icon(Icons.arrow_forward_ios, color: Colors.teal),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ControlesListView(plantaId: planta.idPlanta!),
-                      ),
-                    );
-                  }
-                ),
-              );
-            },
-          );
-        },
+              },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          if (showFloatingButtons) ...[
+            FloatingActionButton(
+              heroTag: 'addPlanta', // Etiqueta única
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  '/planta/numero',
+                  arguments: {
+                    'proyectoId': widget.proyectoId, 
+                    'proyectoNombre': widget.proyectoNombre, 
+                    'userRole': widget.userRole, 
+                    'userName': widget.userName,
+                    'libroId': widget.libroId,
+                    'libroNombre': widget.libroNombre,
+                  },
+                );
+              },
+              backgroundColor: Colors.teal,
+              child: Icon(
+                color: const Color.fromARGB(255, 250, 250, 250),
+                Icons.add
+              ),
+            ),
+            SizedBox(height: 10),
+            FloatingActionButton(
+              heroTag: 'addControl', // Etiqueta única
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ControlFormView(
+                      proyectoId: widget.proyectoId,
+                      proyectoNombre: widget.proyectoNombre,
+                      userRole: widget.userRole,
+                      userName: widget.userName,
+                      libroId: widget.libroId,
+                      libroNombre: widget.libroNombre,
+                    ),
+                  ),
+                );
+              },
+              backgroundColor: Colors.blue,
+              child: Icon(
+                color: const Color.fromARGB(255, 250, 250, 250),
+                Icons.control_point,
+              ),
+            ),
+            SizedBox(height: 10),
+            FloatingActionButton(
+              heroTag: 'addExcel', // Etiqueta única
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  '/excelPlantas',
+                  arguments: {
+                    'proyectoId': widget.proyectoId, 
+                    'proyectoNombre': widget.proyectoNombre, 
+                    'userRole': widget.userRole, 
+                    'userName': widget.userName,
+                    'libroId': widget.libroId,
+                    'libroNombre': widget.libroNombre,
+                  }
+                );
+              },
+              backgroundColor: Colors.purple,
+              child: Icon(
+                color: const Color.fromARGB(255, 250, 250, 250),
+                Icons.file_download_outlined,
+              ),
+            ),
+          ],
+          SizedBox(height: 10),
           FloatingActionButton(
-            heroTag: 'addPlanta', // Etiqueta única
-            onPressed: () {
-              Navigator.pushNamed(
-                context,
-                '/planta/numero',
-                arguments: {
-                  'proyectoId': proyectoId, 
-                  'proyectoNombre': proyectoNombre, 
-                  'userRole': userRole, 
-                  'userName': userName,
-                  'libroId': libroId,
-                  'libroNombre': libroNombre,
-                },
-              );
-            },
+            heroTag: 'toggleButtons', // Etiqueta única
+            onPressed: _toggleFloatingButtons,
             backgroundColor: Colors.green,
             child: Icon(
               color: const Color.fromARGB(255, 250, 250, 250),
-              Icons.add
+              showFloatingButtons ? Icons.close : Icons.menu,
             ),
-          ),
-          SizedBox(height: 10),
-          FloatingActionButton(
-            heroTag: 'addControl', // Etiqueta única
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ControlFormView(
-                    proyectoId: proyectoId,
-                    proyectoNombre: proyectoNombre,
-                    userRole: userRole,
-                    userName: userName,
-                    libroId: libroId,
-                    libroNombre: libroNombre,
-                  ),
-                ),
-              );
-            },
-            backgroundColor: Colors.blue,
-            child: Icon(
-              color: const Color.fromARGB(255, 250, 250, 250),
-              Icons.control_point,
-            ),
-            
           ),
         ],
       ),

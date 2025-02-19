@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:libroscampo/views/plantas/excelPlantas.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:libroscampo/bienvenido.dart';
 import 'package:libroscampo/dashboard.dart';
 import 'package:libroscampo/views/librosdecampo/libro_list.dart';
@@ -10,7 +12,18 @@ import 'package:libroscampo/views/plantas/planta_list.dart';
 import 'package:libroscampo/views/plantas/numeroplantas.dart';
 import 'package:libroscampo/views/controles/controles_form.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await _requestStoragePermission();
+  runApp(MyApp());
+}
+
+Future<void> _requestStoragePermission() async {
+  var status = await Permission.storage.status;
+  if (!status.isGranted) {
+    await Permission.storage.request();
+  }
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -82,6 +95,17 @@ class MyApp extends StatelessWidget {
             libroId: args['libroId'],
             libroNombre: args['libroNombre'],
           );
+        },
+        '/excelPlantas': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          return ExportarExcelScreen(
+            proyectoId: args['proyectoId'],
+            proyectoNombre: args['proyectoNombre'],
+            userRole: args['userRole'],
+            userName: args['userName'],
+            libroId: args['libroId'],
+            libroNombre: args['libroNombre'],
+            );
         },
       },
     );

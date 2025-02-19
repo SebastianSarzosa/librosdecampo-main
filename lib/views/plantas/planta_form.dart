@@ -161,6 +161,7 @@ class _PlantaFormViewState extends State<PlantaFormView> {
                       } else {
                         _selectedVariables.remove(variable);
                       }
+                      
                     });
                   },
                 );

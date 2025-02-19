@@ -90,7 +90,7 @@ class _NumeroPlantasFormState extends State<NumeroPlantasForm> {
                     );
                   }
                 },
-                child: Text('Aceptar'),
+                child: Text('Aceptar',style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                 ),
