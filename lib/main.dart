@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:libroscampo/views/plantas/excelPlantas.dart';
+import 'package:libroscampo/views/usuarios/gestionUser.dart';
+import 'package:libroscampo/views/usuarios/usuario_form.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:libroscampo/bienvenido.dart';
 import 'package:libroscampo/dashboard.dart';
@@ -34,9 +36,14 @@ class MyApp extends StatelessWidget {
       initialRoute: '/login',
       routes: {
         '/login': (context) => LoginCreate(),
+        '/registrarUsuario': (context) => RegisterCreate(),
         '/bienvenido': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
           return Bienvenido(userRole: args['userRole'] , userName: args['userName']);
+        },
+        '/gestionUsuario': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          return GestionUser(userRole: args['userRole'], userName: args['userName']);
         },
         '/dashboard/index': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;

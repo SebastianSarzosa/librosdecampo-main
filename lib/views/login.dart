@@ -116,6 +116,19 @@ class _LoginCreateState extends State<LoginCreate> {
                 child: const Text('Iniciar Sesión'),
               ),
               const SizedBox(height: 16),
+              const Text(
+                'No tienes una cuenta',
+                textAlign: TextAlign.center,
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/registrarUsuario');
+                },
+                child: const Text(
+                  'REGÍSTRATE',
+                  style: TextStyle(color: Colors.green),
+                ),
+              ),
             ],
           ),
         ),

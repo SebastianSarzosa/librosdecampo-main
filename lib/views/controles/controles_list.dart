@@ -5,8 +5,19 @@ import 'package:libroscampo/views/variables/variable_list.dart';
 
 class ControlesListView extends StatelessWidget {
   final int plantaId;
+  final int proyectoId;
+  final String proyectoNombre;
+  final String userRole;
+  final String userName;   // Asegúrate de que este campo sea final
+  final int libroId; // Añade el campo libroId
+  final String libroNombre;
 
-  const ControlesListView({Key? key, required this.plantaId}) : super(key: key);
+   ControlesListView({
+     required this.plantaId, required this.proyectoId, 
+     required this.proyectoNombre,  required this.userRole, 
+     required this.userName, required this.libroId, 
+     required this.libroNombre
+     });
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +85,15 @@ class ControlesListView extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => VariablesListView(controlId: control.idControl!),
+                          builder: (context) => VariablesListView(
+                            controlId: control.idControl!,
+                            userRole: userRole,
+                            userName: userName,
+                            libroId: libroId,
+                            libroNombre: libroNombre,
+                            proyectoId: proyectoId,
+                            proyectoNombre: proyectoNombre,
+                          ),
                         ),
                       );
                     },

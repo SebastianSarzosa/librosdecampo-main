@@ -28,7 +28,6 @@ class DbConnection {
           (4, 'Fertilizacion', 'libro4', '${DateTime.parse('2022-11-11')}')
          """),
 
-
         await db.execute("""
           CREATE TABLE Proyectos(
             id_pro INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -100,8 +99,8 @@ class DbConnection {
           ('Altura', NULL, 25.5, NULL, 3)
         """),
 
-         await db.execute("""
-           CREATE TABLE Usuarios (
+        await db.execute("""
+          CREATE TABLE Usuarios (
             id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
             nombre_usuario TEXT NOT NULL,
             password_usuario TEXT,
@@ -113,15 +112,25 @@ class DbConnection {
           INSERT INTO Usuarios (nombre_usuario, password_usuario, rol_usuario) VALUES
           ('admin', 'admin123', 'admin'),
           ('visor', 'visor123', 'visor'),
-          ('user1', 'user123', 'visor'),
-          ('user2', 'user456', 'visor');
+          ('user1', 'user123', 'editor'),
+          ('user2', 'user456', 'editor');
+        """),
+
+        await db.execute("""
+          CREATE TABLE RegistroUsuario (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            apellido TEXT NOT NULL,
+            correo_electronico TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL,
+            rol_usuario TEXT NOT NULL,
+            nombre_usuario TEXT NOT NULL,
+            FOREIGN KEY (rol_usuario) REFERENCES Usuarios(rol_usuario),
+            FOREIGN KEY (nombre_usuario) REFERENCES Usuarios(nombre_usuario)
+          );
         """),
        } 
     );
-
-
-
-    
   } 
   
   static Future<int> insert(String tableName, dynamic data) async{
@@ -134,7 +143,6 @@ class DbConnection {
     return db.rawInsert(sql);
   }
 
-  
   static Future<int> update(String tableName, dynamic data, int id) async{
     final db = await getDatabase();
     return db.update(tableName, 
@@ -148,10 +156,8 @@ class DbConnection {
   static Future<int> updatesql(String sql) async{
     final db = await getDatabase();
     return db.rawUpdate(sql);
-    
   }
   
-
   static Future<int> delete(String tableName, int id) async{
     final db = await getDatabase();
     return db.delete(tableName,
@@ -164,8 +170,6 @@ class DbConnection {
     final db = await getDatabase();
     return db.rawDelete(sql);
   }
-
-  
 
   static Future <List<Map<String, dynamic>>> list(String tableName) async{
     final db=await getDatabase(); 

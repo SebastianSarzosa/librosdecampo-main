@@ -140,7 +140,15 @@ class _PlantaListViewState extends State<PlantaListView> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ControlesListView(plantaId: planta.idPlanta!),
+                          builder: (context) => ControlesListView(
+                            plantaId: planta.idPlanta!, 
+                            userRole: widget.userRole, 
+                            userName: widget.userName,
+                            proyectoId: widget.proyectoId,
+                            proyectoNombre: widget.proyectoNombre,
+                            libroId: widget.libroId,
+                            libroNombre: widget.libroNombre,
+                          ),
                         ),
                       );
                     }
@@ -151,7 +159,7 @@ class _PlantaListViewState extends State<PlantaListView> {
           ),
         ],
       ),
-      floatingActionButton: Column(
+      floatingActionButton: (widget.userRole == 'editor' || widget.userRole == 'admin') ? Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           if (showFloatingButtons) ...[
@@ -236,7 +244,7 @@ class _PlantaListViewState extends State<PlantaListView> {
             ),
           ),
         ],
-      ),
+      ) : null,
     );
   }
 }

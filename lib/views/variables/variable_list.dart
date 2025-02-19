@@ -4,8 +4,18 @@ import 'package:libroscampo/repositories/variables_repository.dart';
 
 class VariablesListView extends StatefulWidget {
   final int controlId;
+  final int proyectoId;
+  final String proyectoNombre;
+  final String userRole;
+  final String userName;   // Asegúrate de que este campo sea final
+  final int libroId; // Añade el campo libroId
+  final String libroNombre; // Añadir el campo userRole
 
-  const VariablesListView({Key? key, required this.controlId}) : super(key: key);
+  const VariablesListView({
+    required this.controlId, required this.userRole,
+    required this.userName, required this.libroId, required this.libroNombre,
+    required this.proyectoId, required this.proyectoNombre
+    });
 
   @override
   _VariablesListViewState createState() => _VariablesListViewState();
@@ -85,16 +95,20 @@ class _VariablesListViewState extends State<VariablesListView> {
                       color: Colors.grey[600],
                     ),
                   ),
-                  trailing: Icon(Icons.edit, color: Colors.teal),
-                  onTap: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => VariableDetailView(variable: variable),
-                      ),
-                    );
-                    _refreshVariables();
-                  },
+                  trailing: (widget.userRole == 'admin' || widget.userRole == 'editor') 
+                    ? Icon(Icons.edit, color: Colors.teal)
+                    : null,
+                  onTap: (widget.userRole == 'admin' || widget.userRole == 'editor') 
+                    ? () async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VariableDetailView(variable: variable),
+                          ),
+                        );
+                        _refreshVariables();
+                      }
+                    : null,
                 ),
               );
             },

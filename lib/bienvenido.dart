@@ -41,6 +41,16 @@ class Bienvenido extends StatelessWidget {
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 32),
+            if (userRole == 'admin')
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/gestionUsuario', arguments: {'userRole': userRole, 'userName': userName}); // Ir a la lista de libros
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                ),
+                child: const Text('Gestionar Usuarios',style: TextStyle(color: Colors.white),),
+              ),
           ],
         ),
       ),
