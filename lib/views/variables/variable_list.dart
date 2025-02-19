@@ -7,15 +7,21 @@ class VariablesListView extends StatefulWidget {
   final int proyectoId;
   final String proyectoNombre;
   final String userRole;
-  final String userName;   // Asegúrate de que este campo sea final
+  final String userName; // Asegúrate de que este campo sea final
   final int libroId; // Añade el campo libroId
   final String libroNombre; // Añadir el campo userRole
+  final Function()? onDataUpdated; // Añade este campo
 
   const VariablesListView({
-    required this.controlId, required this.userRole,
-    required this.userName, required this.libroId, required this.libroNombre,
-    required this.proyectoId, required this.proyectoNombre
-    });
+    required this.controlId,
+    required this.userRole,
+    required this.userName,
+    required this.libroId,
+    required this.libroNombre,
+    required this.proyectoId,
+    required this.proyectoNombre,
+    this.onDataUpdated, // Recibe el callback
+  });
 
   @override
   _VariablesListViewState createState() => _VariablesListViewState();
@@ -49,7 +55,7 @@ class _VariablesListViewState extends State<VariablesListView> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, true); // Indicar que se debe refrescar el dashboard
           },
         ),
       ),
@@ -95,20 +101,23 @@ class _VariablesListViewState extends State<VariablesListView> {
                       color: Colors.grey[600],
                     ),
                   ),
-                  trailing: (widget.userRole == 'admin' || widget.userRole == 'editor') 
-                    ? Icon(Icons.edit, color: Colors.teal)
-                    : null,
-                  onTap: (widget.userRole == 'admin' || widget.userRole == 'editor') 
-                    ? () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => VariableDetailView(variable: variable),
-                          ),
-                        );
-                        _refreshVariables();
-                      }
-                    : null,
+                  trailing: (widget.userRole == 'admin' || widget.userRole == 'editor')
+                      ? Icon(Icons.edit, color: Colors.teal)
+                      : null,
+                  onTap: (widget.userRole == 'admin' || widget.userRole == 'editor')
+                      ? () async {
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => VariableDetailView(variable: variable),
+                            ),
+                          );
+                          if (result == true) {
+                            _refreshVariables();
+                            Navigator.pop(context, true); // Indicar que se debe refrescar el dashboard
+                          }
+                        }
+                      : null,
                 ),
               );
             },
@@ -139,7 +148,7 @@ class VariableDetailView extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, true); // Indicar que se debe refrescar el dashboard
           },
         ),
       ),
@@ -166,7 +175,7 @@ class VariableDetailView extends StatelessWidget {
                     backgroundColor: Colors.green,
                   ),
                 );
-                Navigator.pop(context);
+                Navigator.pop(context, true); // Indicar que se debe refrescar el dashboard
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,

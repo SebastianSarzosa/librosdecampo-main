@@ -22,10 +22,10 @@ class DbConnection {
 
         await db.execute("""
           INSERT INTO LibrosCampo (id, nombre_libro, descripcion_libro, fecha_creacion_libro) VALUES
-          (1, 'Fitomejoramiento', 'Libro3', '${DateTime.parse('2022-11-11')}'),
-          (2, 'Caracterizacion', 'Libro2', '${DateTime.parse('2022-11-11')}'),
-          (3, 'Produccion', 'libro3', '${DateTime.parse('2022-11-11')}'),
-          (4, 'Fertilizacion', 'libro4', '${DateTime.parse('2022-11-11')}')
+          (1, 'Fitomejoramiento', 'Libro3', '2022-11-11'),
+          (2, 'Caracterizacion', 'Libro2', '2022-11-11'),
+          (3, 'Produccion', 'libro3', '2022-11-11'),
+          (4, 'Fertilizacion', 'libro4', '2022-11-11')
          """),
 
         await db.execute("""

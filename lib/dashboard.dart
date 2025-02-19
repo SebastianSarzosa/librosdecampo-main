@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:libroscampo/settings/db.connection.dart';
+import 'package:libroscampo/views/variables/variable_list.dart';
 
 class Dashboard extends StatefulWidget {
   final String userRole; // Añade el campo userRole
   final String userName; // Añade el campo userName
 
-  Dashboard({required this.userRole, required this.userName});
+  const Dashboard({Key? key, required this.userRole, required this.userName}) : super(key: key);
 
   @override
   _DashboardState createState() => _DashboardState();
@@ -58,6 +59,26 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
+  void _refreshChartData() async {
+    if (selectedPlant != null) {
+      final data = await DbConnection.selectSql('''
+        SELECT c.fecha_control, v.valor_numerico
+        FROM Controles c
+        JOIN Variables v ON c.id_control = v.fkid_control
+        WHERE c.fkid_planta = ? AND v.nombre_variable = 'Altura'
+        ORDER BY c.fecha_control
+      ''', [int.parse(selectedPlant!)]);
+  
+      setState(() {
+        chartData = data.map<FlSpot>((row) {
+          final date = DateTime.parse(row['fecha_control']);
+          final value = row['valor_numerico'] != null ? row['valor_numerico'].toDouble() : 0.0;
+          return FlSpot(date.millisecondsSinceEpoch.toDouble(), value);
+        }).toList();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,6 +94,12 @@ class _DashboardState extends State<Dashboard> {
             ); // Regresar a la pantalla de bienvenida
           },
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _refreshChartData, // Botón para actualizar los datos y la gráfica
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -108,11 +135,11 @@ class _DashboardState extends State<Dashboard> {
                       isExpanded: true,
                       hint: const Text('Selecciona una planta'),
                       value: selectedPlant,
-                      onChanged: (String? newValue) {
+                      onChanged: (String? newValue) async {
                         setState(() {
                           selectedPlant = newValue;
-                          _loadChartData(int.parse(newValue!));
                         });
+                        _refreshChartData();
                       },
                       items: plants.map<DropdownMenuItem<String>>((Map<String, dynamic> plant) {
                         return DropdownMenuItem<String>(
@@ -124,7 +151,7 @@ class _DashboardState extends State<Dashboard> {
                   ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 16), 
             Expanded(
               child: Card(
                 color: Colors.white,
@@ -173,8 +200,8 @@ class _DashboardState extends State<Dashboard> {
                                 );
                                 return SideTitleWidget(
                                   space: 4.0,
-                                  child: Text('${date.day}/${date.month}', style: style),
                                   meta: meta,
+                                  child: Text('${date.day}/${date.month}', style: style),
                                 );
                               },
                             ),
@@ -213,5 +240,3 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 }
-
-
