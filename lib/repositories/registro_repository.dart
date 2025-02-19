@@ -37,7 +37,24 @@ class RegistroUsuarioRepository {
 
   // Método para eliminar un registro de usuario por ID
   Future<int> delete(int id) async {
-    return await DbConnection.delete(tableName, id);
+    final db = await DbConnection.getDatabase();
+    final usuario = await getById(id);
+    if (usuario != null) {
+      await db.transaction((txn) async {
+        await txn.delete(
+          'Usuarios',
+          where: 'nombre_usuario = ?',
+          whereArgs: [usuario.nombreUsuario],
+        );
+        await txn.delete(
+          'RegistroUsuario',
+          where: 'id = ?',
+          whereArgs: [id],
+        );
+      });
+      return 1;
+    }
+    return 0;
   }
 
   // Método para actualizar un registro de usuario por ID

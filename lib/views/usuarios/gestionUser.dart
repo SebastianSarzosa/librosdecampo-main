@@ -46,23 +46,37 @@ class _GestionUserState extends State<GestionUser> {
                 return ListTile(
                   title: Text(usuario.nombreUsuario),
                   subtitle: Text('Rol: ${usuario.rolUsuario}'),
-                  trailing: DropdownButton<String>(
-                    value: usuario.rolUsuario,
-                    items: <String>['admin', 'visor', 'editor']
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) async {
-                      if (newValue != null) {
-                        setState(() {
-                          usuario.rolUsuario = newValue;
-                        });
-                        await RegistroUsuarioRepository().updateUserRole(usuario.nombreUsuario, newValue);
-                      }
-                    },
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      DropdownButton<String>(
+                        value: usuario.rolUsuario,
+                        items: <String>['admin', 'visor', 'editor']
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) async {
+                          if (newValue != null) {
+                            setState(() {
+                              usuario.rolUsuario = newValue;
+                            });
+                            await RegistroUsuarioRepository().updateUserRole(usuario.nombreUsuario, newValue);
+                          }
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: () async {
+                          await RegistroUsuarioRepository().delete(usuario.id!);
+                          setState(() {
+                            usuarios = RegistroUsuarioRepository().listAllUsers();
+                          });
+                        },
+                      ),
+                    ],
                   ),
                 );
               },
