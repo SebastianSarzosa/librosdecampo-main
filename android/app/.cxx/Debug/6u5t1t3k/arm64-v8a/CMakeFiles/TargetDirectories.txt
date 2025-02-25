@@ -1,0 +1,2 @@
+C:/Users/Sebas/Documents/tesis/librosdecampo-main/android/app/.cxx/Debug/6u5t1t3k/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/Sebas/Documents/tesis/librosdecampo-main/android/app/.cxx/Debug/6u5t1t3k/arm64-v8a/CMakeFiles/rebuild_cache.dir
