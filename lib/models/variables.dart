@@ -31,7 +31,7 @@ class Variable {
       idVariable: map['id_variable'],
       nombreVariable: map['nombre_variable'],
       valorTexto: map['valor_texto'],
-      valorNumerico: map['valor_numerico'],
+      valorNumerico: map['valor_numerico']?.toDouble(), // Asegúrate de convertir a double
       valorFecha: map['valor_fecha'] != null ? DateTime.parse(map['valor_fecha']) : null,
       fkidControl: map['fkid_control'],
     );

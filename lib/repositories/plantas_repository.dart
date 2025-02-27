@@ -29,6 +29,6 @@ class PlantasRepository {
 
   // Método para actualizar una planta por ID
   Future<int> update(int id, Planta planta) async {
-    return await DbConnection.update(tableName, planta.toMap(), id);
+    return await DbConnection.updatePlanta(tableName, planta.toMap(), id);
   }
 }

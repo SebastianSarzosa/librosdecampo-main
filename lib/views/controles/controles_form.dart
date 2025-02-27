@@ -80,6 +80,9 @@ class _ControlFormViewState extends State<ControlFormView> {
                           if (value == null || value.isEmpty) {
                             return 'El nombre del control es requerido';
                           }
+                          if (value.length > 100) {
+                            return 'El nombre del control no puede exceder los 100 caracteres';
+                          }
                           return null;
                         },
                       ),

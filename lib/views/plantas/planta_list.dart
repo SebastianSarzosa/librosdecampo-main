@@ -3,6 +3,7 @@ import 'package:libroscampo/models/plantas.dart';
 import 'package:libroscampo/repositories/plantas_repository.dart';
 import 'package:libroscampo/views/controles/controles_list.dart';
 import 'package:libroscampo/views/controles/controles_form.dart';
+import 'package:libroscampo/views/plantas/planta_edit.dart';
 
 class PlantaListView extends StatefulWidget {
   final int proyectoId;
@@ -96,21 +97,13 @@ class _PlantaListViewState extends State<PlantaListView> {
               ),
             ),
           ),
+          Text('Total de Plantas: ${filteredPlantasList.length}'),
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(8.0),
-              itemCount: filteredPlantasList.length + 1, // +1 para incluir el texto antes de los cards
+              itemCount: filteredPlantasList.length, // Mostrar todas las plantas
               itemBuilder: (context, index) {
-                if (index == 0) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Proyecto. ${widget.proyectoNombre}',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                    ),
-                  );
-                }
-                final planta = filteredPlantasList[index - 1];
+                final planta = filteredPlantasList[index];
                 return Card(
                   elevation: 5,
                   margin: EdgeInsets.symmetric(vertical: 8.0),
@@ -129,7 +122,7 @@ class _PlantaListViewState extends State<PlantaListView> {
                       ),
                     ),
                     subtitle: Text(
-                      'Descripción: ${planta.descripcion}',
+                      'Nombre Cientifico: ${planta.descripcion}',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey[600],
@@ -232,8 +225,36 @@ class _PlantaListViewState extends State<PlantaListView> {
                 Icons.file_download_outlined,
               ),
             ),
+            SizedBox(height: 10),
+            if (widget.userRole == 'admin') ...[
+              FloatingActionButton(
+                heroTag: 'editPlanta', // Etiqueta única
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PlantaEditView(
+                        plantasList: plantasList,
+                        userRole: widget.userRole,
+                        userName: widget.userName,
+                        libroId: widget.libroId,
+                        libroNombre: widget.libroNombre,
+                        proyectoNombre: widget.proyectoNombre,
+                        proyectoId: widget.proyectoId,
+                        numeroPlantas: plantasList.length,
+                      ),
+                    ),
+                  );
+                },
+                backgroundColor: Colors.cyan,
+                child: Icon(
+                  color: const Color.fromARGB(255, 250, 250, 250),
+                  Icons.edit,
+                ),
+              ),
+              SizedBox(height: 10),
+            ],
           ],
-          SizedBox(height: 10),
           FloatingActionButton(
             heroTag: 'toggleButtons', // Etiqueta única
             onPressed: _toggleFloatingButtons,

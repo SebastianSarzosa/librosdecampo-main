@@ -31,7 +31,7 @@ class _PlantaFormViewState extends State<PlantaFormView> {
   final _descripcionController = TextEditingController();
   final _controlNombreController = TextEditingController();
   final _fechaControlController = TextEditingController(text: DateTime.now().toString().split(' ')[0]); // Establece la fecha actual por defecto
-  final List<String> _variables = ['Altura', 'Color de hoja', 'Nutrientes', 'Presencia de plagas', 'Cantidad de agua', 'Fecha de última poda'];
+  final List<String> _variables = ['Altura', 'Color de hoja', 'Nutrientes', 'Cantidad de agua'];
   final List<String> _selectedVariables = [];
 
   @override
@@ -115,6 +115,9 @@ class _PlantaFormViewState extends State<PlantaFormView> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'El nombre del control es requerido';
+                  }
+                  if (value.length > 100) {
+                    return 'El nombre del control no puede exceder los 100 caracteres';
                   }
                   return null;
                 },

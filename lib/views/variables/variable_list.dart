@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Añadir esta línea
 import 'package:libroscampo/models/variables.dart';
 import 'package:libroscampo/repositories/variables_repository.dart';
 
@@ -135,7 +136,9 @@ class VariableDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _valueController = TextEditingController(text: variable.valorTexto);
+    final _valueController = TextEditingController(
+      text: variable.valorTexto ?? variable.valorNumerico?.toString() ?? variable.valorFecha?.toString().split(' ')[0]
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -158,16 +161,70 @@ class VariableDetailView extends StatelessWidget {
           children: [
             TextFormField(
               controller: _valueController,
+              keyboardType: variable.nombreVariable == 'Altura' || variable.nombreVariable == 'Cantidad de agua'
+                  ? TextInputType.number
+                  : variable.valorFecha != null
+                      ? TextInputType.datetime
+                      : TextInputType.text,
               decoration: InputDecoration(
-                labelText: 'Valor de ${variable.nombreVariable}',
+                labelText: variable.nombreVariable == 'Altura'
+                    ? 'Ingrese el valor en cm'
+                    : variable.nombreVariable == 'Cantidad de agua'
+                        ? 'Ingrese el valor en litros'
+                        : 'Valor de ${variable.nombreVariable}',
                 border: OutlineInputBorder(),
+                suffixText: variable.nombreVariable == 'Altura'
+                    ? 'cm'
+                    : variable.nombreVariable == 'Cantidad de agua'
+                        ? 'litros'
+                        : null,
               ),
+              inputFormatters: variable.nombreVariable == 'Altura' || variable.nombreVariable == 'Cantidad de agua'
+                  ? [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))]
+                  : null,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'El valor es requerido';
+                }
+                if (variable.nombreVariable == 'Altura') {
+                  final altura = double.tryParse(value);
+                  if (altura == null || altura < 0 || altura > 500) {
+                    return 'La altura debe ser un número entre 0 y 500 cm';
+                  }
+                }
+                if (variable.nombreVariable == 'Cantidad de agua') {
+                  final cantidad = double.tryParse(value);
+                  if (cantidad == null || cantidad < 0) {
+                    return 'La cantidad de agua debe ser un número positivo';
+                  }
+                }
+                return null;
+              },
+              onTap: variable.valorFecha != null
+                  ? () async {
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2101),
+                      );
+                      if (pickedDate != null) {
+                        String formattedDate = pickedDate.toString().split(' ')[0];
+                        _valueController.text = formattedDate;
+                      }
+                    }
+                  : null,
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
-                // Update the variable value
-                variable.valorTexto = _valueController.text;
+                if (variable.nombreVariable == 'Altura' || variable.nombreVariable == 'Cantidad de agua') {
+                  variable.valorNumerico = double.tryParse(_valueController.text);
+                } else if (variable.valorFecha != null) {
+                  variable.valorFecha = DateTime.tryParse(_valueController.text);
+                } else {
+                  variable.valorTexto = _valueController.text;
+                }
                 await VariablesRepository().update(variable.idVariable!, variable);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

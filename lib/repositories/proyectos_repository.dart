@@ -29,6 +29,6 @@ class ProyectosRepository {
 
   // Método para actualizar un proyecto por ID
   Future<int> update(int id, Proyecto proyecto) async {
-    return await DbConnection.update(tableName, proyecto.toMap(), id);
+    return await DbConnection.updateProyecto(tableName, proyecto.toMap(), id); // Cambia 'id_variable' a 'id_pro'
   }
 }

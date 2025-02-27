@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:libroscampo/models/proyectos.dart';
 import 'package:libroscampo/repositories/proyectos_repository.dart';
 import 'package:libroscampo/views/plantas/planta_list.dart';
+import 'package:libroscampo/views/proyectos/proyecto_edit.dart'; // Importa la vista de edición de proyectos
 
 class ProyectoListView extends StatefulWidget {
   final int libroId;
@@ -119,7 +120,30 @@ class _ProyectoListViewState extends State<ProyectoListView> {
                             color: Colors.grey[600], // Color gris para la descripción
                           ),
                         ),
-                        trailing: Icon(Icons.arrow_forward_ios, color: Colors.teal), // Ícono de flecha al final
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (widget.userRole == 'admin') // Mostrar el botón de editar solo si el usuario es admin
+                              IconButton(
+                                icon: Icon(Icons.edit, color: Colors.teal),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ProyectoEditView(
+                                        proyecto: proyecto,
+                                        userRole: widget.userRole,
+                                        userName: widget.userName,
+                                        libroId: widget.libroId,
+                                        libroNombre: widget.libroNombre,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            Icon(Icons.arrow_forward_ios, color: Colors.teal), // Ícono de flecha al final
+                          ],
+                        ),
                         onTap: () {
                           // Navegar a la pantalla de proyectos
                           Navigator.push(

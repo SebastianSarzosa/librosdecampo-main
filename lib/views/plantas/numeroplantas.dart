@@ -63,8 +63,9 @@ class _NumeroPlantasFormState extends State<NumeroPlantasForm> {
                   if (value == null || value.isEmpty) {
                     return 'Por favor ingrese un número';
                   }
-                  if (int.tryParse(value) == null || int.parse(value) <= 0) {
-                    return 'Por favor ingrese un número válido';
+                  final int? plantas = int.tryParse(value);
+                  if (plantas == null || plantas < 3 || plantas > 30) {
+                    return 'Por favor ingrese un número válido entre 3 y 30';
                   }
                   return null;
                 },

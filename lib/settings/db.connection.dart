@@ -175,10 +175,6 @@ class DbConnection {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  static Future<int> insertSql(String sql) async {
-    final db = await getDatabase();
-    return db.rawInsert(sql);
-  }
 
   static Future<int> update(String tableName, dynamic data, int id) async {
     final db = await getDatabase();
@@ -187,10 +183,20 @@ class DbConnection {
         whereArgs: [id],
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
-
-  static Future<int> updatesql(String sql) async {
+  static Future<int> updateProyecto(String tableName, dynamic data, int id) async {
     final db = await getDatabase();
-    return db.rawUpdate(sql);
+    return db.update(tableName, data,
+        where: "id_pro = ?",
+        whereArgs: [id],
+        conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  static Future<int> updatePlanta(String tableName, dynamic data, int id) async {
+    final db = await getDatabase();
+    return db.update(tableName, data,
+        where: "id_planta = ?",
+        whereArgs: [id],
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   static Future<int> delete(String tableName, int id) async {
@@ -200,11 +206,6 @@ class DbConnection {
       where: "id=?",
       whereArgs: [id],
     );
-  }
-
-  static Future<int> deletesql(String sql) async {
-    final db = await getDatabase();
-    return db.rawDelete(sql);
   }
 
   static Future<List<Map<String, dynamic>>> list(String tableName) async {
@@ -230,6 +231,7 @@ class DbConnection {
     return db.insert('Usuarios', user.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
+  
 
   // Método para obtener un usuario por nombre de usuario y contraseña
   static Future<Map<String, dynamic>?> getUser(
@@ -245,5 +247,7 @@ class DbConnection {
       return maps.first; // Retorna el primer usuario encontrado
     }
     return null; // Retorna null si no se encuentra el usuario
+    
   }
+
 }
