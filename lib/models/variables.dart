@@ -5,6 +5,7 @@ class Variable {
   double? valorNumerico;
   DateTime? valorFecha;
   int fkidControl;
+  String? imagePath; // Make this non-final
 
   Variable({
     this.idVariable,
@@ -13,6 +14,7 @@ class Variable {
     this.valorNumerico,
     this.valorFecha,
     required this.fkidControl,
+    this.imagePath,
   });
 
   Map<String, dynamic> toMap() {
@@ -23,6 +25,7 @@ class Variable {
       'valor_numerico': valorNumerico,
       'valor_fecha': valorFecha?.toIso8601String(),
       'fkid_control': fkidControl,
+      'image_path': imagePath, // Add this line
     };
   }
 
@@ -34,6 +37,7 @@ class Variable {
       valorNumerico: map['valor_numerico']?.toDouble(), // Asegúrate de convertir a double
       valorFecha: map['valor_fecha'] != null ? DateTime.parse(map['valor_fecha']) : null,
       fkidControl: map['fkid_control'],
+      imagePath: map['image_path'], // Add this line
     );
   }
 }

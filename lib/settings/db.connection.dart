@@ -3,7 +3,7 @@ import 'package:sqflite/sqflite.dart'; //importar conexop a sqliite
 import 'package:path/path.dart'; //importar gestor de rutas
 
 class DbConnection {
-  static const version = 1; // tener un control por eso es version = 1
+  static const version = 2; // Incrementar la versión de la base de datos
   static const String dbname = 'libroCampo.db'; //nombre de la base de datos
 
   static Future<Database> getDatabase() async {
@@ -110,6 +110,7 @@ class DbConnection {
             valor_numerico NUMERIC,
             valor_fecha DATE,
             fkid_control INTEGER NOT NULL,
+            image_path TEXT, 
             FOREIGN KEY (fkid_control) REFERENCES Controles(id_control) ON DELETE CASCADE
           );
         """),
@@ -166,7 +167,12 @@ class DbConnection {
             FOREIGN KEY (nombre_usuario) REFERENCES Usuarios(nombre_usuario)
           );
         """),
-            });
+            },
+        onUpgrade: (db, oldVersion, newVersion) async {
+          if (oldVersion < 2) {
+            await db.execute("ALTER TABLE Variables ADD COLUMN image_path TEXT");
+          }
+        });
   }
 
   static Future<int> insert(String tableName, dynamic data) async {
@@ -175,7 +181,6 @@ class DbConnection {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-
   static Future<int> update(String tableName, dynamic data, int id) async {
     final db = await getDatabase();
     return db.update(tableName, data,
@@ -183,6 +188,7 @@ class DbConnection {
         whereArgs: [id],
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
+
   static Future<int> updateProyecto(String tableName, dynamic data, int id) async {
     final db = await getDatabase();
     return db.update(tableName, data,
@@ -231,7 +237,6 @@ class DbConnection {
     return db.insert('Usuarios', user.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
-  
 
   // Método para obtener un usuario por nombre de usuario y contraseña
   static Future<Map<String, dynamic>?> getUser(
@@ -247,7 +252,5 @@ class DbConnection {
       return maps.first; // Retorna el primer usuario encontrado
     }
     return null; // Retorna null si no se encuentra el usuario
-    
   }
-
 }
