@@ -79,6 +79,19 @@ class _VariablesListViewState extends State<VariablesListView> {
     }
   }
 
+  void _viewImage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ImageViewScreen(imageFile: _imageFile, onImageTaken: (XFile image) {
+          setState(() {
+            _imageFile = image;
+          });
+        }),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,52 +117,15 @@ class _VariablesListViewState extends State<VariablesListView> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  
-                  _imageFile == null
-                      ? Text('No se ha seleccionado una imagen.')
-                      : Image.file(File(_imageFile!.path)),
-                  const SizedBox(height: 10),
                   ElevatedButton(
-                    onPressed: _pickImage,
-                    child: const Text('Tomar Foto'),
+                    onPressed: _viewImage,
+                    child: const Text('Ver Foto'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                       foregroundColor: Colors.white,
+                      
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        // Crear una nueva variable con los datos ingresados
-                        final nuevaVariable = Variable(
-                          nombreVariable: _nombreController.text,
-                          valorTexto: null,
-                          valorNumerico: null,
-                          valorFecha: null,
-                          fkidControl: widget.controlId,
-                          imagePath: _imageFile?.path,
-                        );
-
-                        // Guardar la variable en la base de datos
-                        await VariablesRepository().create(nuevaVariable);
-
-                        // Refrescar la lista de variables
-                        _refreshVariables();
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Variable guardada correctamente'),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                      }
-                    },
-                    child: const Text('Guardar'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      foregroundColor: Colors.white,
-                    ),
+                    
                   ),
                 ],
               ),
@@ -201,8 +177,6 @@ class _VariablesListViewState extends State<VariablesListView> {
                                 color: Colors.grey[600],
                               ),
                             ),
-                            if (variable.imagePath != null)
-                              Image.file(File(variable.imagePath!)),
                           ],
                         ),
                         trailing: (widget.userRole == 'admin' || widget.userRole == 'editor')
@@ -353,6 +327,77 @@ class VariableDetailView extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class ImageViewScreen extends StatelessWidget {
+  final XFile? imageFile;
+  final Function(XFile) onImageTaken;
+
+  const ImageViewScreen({Key? key, required this.imageFile, required this.onImageTaken}) : super(key: key);
+
+  Future<void> _takePhoto(BuildContext context) async {
+    final status = await [
+      Permission.camera,
+    ].request();
+
+    if (status[Permission.camera]!.isGranted) {
+      final ImagePicker _picker = ImagePicker();
+      final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+      if (image != null) {
+        onImageTaken(image);
+        Navigator.pop(context);
+      }
+    } else if (status[Permission.camera]!.isDenied) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Permiso para acceder a la cámara denegado'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else if (status[Permission.camera]!.isPermanentlyDenied) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Permiso para acceder a la cámara denegado permanentemente. Por favor, habilítelo en la configuración.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Ver Foto", style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.green,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context, true); // Indicar que se debe refrescar el dashboard
+          },
+        ),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            imageFile == null
+                ? Text('No existe ninguna foto.')
+                : Image.file(File(imageFile!.path)),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () => _takePhoto(context),
+              child: const Text('Tomar Foto'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+              ),
+            ),
+          ],
         ),
       ),
     );
