@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:libroscampo/models/controles.dart';
 import 'package:libroscampo/repositories/controles_repository.dart';
+import 'package:libroscampo/views/dashboardPlanta.dart';
 import 'package:libroscampo/views/variables/variable_list.dart';
 
 class ControlesListView extends StatelessWidget {
@@ -102,6 +103,26 @@ class ControlesListView extends StatelessWidget {
             },
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DashboardPlantaView(
+                plantaId: plantaId,
+                proyectoId: proyectoId,
+                proyectoNombre: proyectoNombre,
+                userRole: userRole,
+                userName: userName,
+                libroId: libroId,
+                libroNombre: libroNombre,
+              ),
+            ),
+          );
+        },
+        child: Icon(Icons.dashboard, color: Colors.white),
+        backgroundColor: Colors.green,
       ),
     );
   }
