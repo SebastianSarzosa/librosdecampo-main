@@ -31,7 +31,7 @@ class _PlantaFormViewState extends State<PlantaFormView> {
   final _descripcionController = TextEditingController();
   final _controlNombreController = TextEditingController();
   final _fechaControlController = TextEditingController(text: DateTime.now().toString().split(' ')[0]); // Establece la fecha actual por defecto
-  final List<String> _variables = ['Altura', 'Color de hoja', 'Nutrientes', 'Cantidad de agua'];
+  final List<String> _variables = ['Altura', 'Color de hoja', 'Cantidad de Saponinas', 'Cantidad de agua'];
   final List<String> _selectedVariables = [];
 
   @override

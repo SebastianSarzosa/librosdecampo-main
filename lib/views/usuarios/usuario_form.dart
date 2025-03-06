@@ -70,8 +70,8 @@ class _RegisterCreateState extends State<RegisterCreate> {
                   if (value == null || value.isEmpty) {
                     return 'Por favor ingrese su correo electrónico';
                   }
-                  if (!RegExp(r'^[a-zA-Z]+\.[a-zA-Z]+[0-9]{4}@utc\.edu\.ec$').hasMatch(value)) {
-                    return 'El correo electrónico debe tener el formato nombre.apellido4numeros@utc.edu.ec';
+                  if (!RegExp(r'^[a-zA-Z0-9._%+-]+@utc\.edu\.ec$').hasMatch(value)) {
+                    return 'El correo electrónico debe tener el formato correcto';
                   }
                   return null;
                 },

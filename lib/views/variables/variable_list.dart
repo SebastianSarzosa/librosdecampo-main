@@ -41,6 +41,7 @@ class _VariablesListViewState extends State<VariablesListView> {
   void initState() {
     super.initState();
     _variablesFuture = VariablesRepository().listVariablesByControl(widget.controlId);
+    _loadImage();
   }
 
   void _refreshVariables() {
@@ -49,33 +50,12 @@ class _VariablesListViewState extends State<VariablesListView> {
     });
   }
 
-  Future<void> _pickImage() async {
-    final status = await [
-      Permission.camera,
-    ].request(); // Solicitar permisos
-
-    if (status[Permission.camera]!.isGranted) {
-      final ImagePicker _picker = ImagePicker();
-      final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+  Future<void> _loadImage() async {
+    final existingVariable = await VariablesRepository().getVariableByControlAndName(widget.controlId, 'Foto');
+    if (existingVariable != null && existingVariable.imagePath != null) {
       setState(() {
-        _imageFile = image;
+        _imageFile = XFile(existingVariable.imagePath!);
       });
-    } else if (status[Permission.camera]!.isDenied) {
-      // Manejar el caso en que el permiso fue denegado
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Permiso para acceder a la cámara denegado'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    } else if (status[Permission.camera]!.isPermanentlyDenied) {
-      // Manejar el caso en que el permiso fue denegado permanentemente
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Permiso para acceder a la cámara denegado permanentemente. Por favor, habilítelo en la configuración.'),
-          backgroundColor: Colors.red,
-        ),
-      );
     }
   }
 
@@ -83,13 +63,38 @@ class _VariablesListViewState extends State<VariablesListView> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ImageViewScreen(imageFile: _imageFile, onImageTaken: (XFile image) {
-          setState(() {
-            _imageFile = image;
-          });
-        }),
+        builder: (context) => ImageViewScreen(
+          controlId: widget.controlId,
+          imageFile: _imageFile,
+          onImageTaken: (XFile image) {
+            setState(() {
+              _imageFile = image;
+            });
+            _saveImagePath(image.path);
+          },
+          userRole: widget.userRole,
+        ),
       ),
     );
+  }
+
+  Future<void> _saveImagePath(String path) async {
+    final existingVariable = await VariablesRepository().getVariableByControlAndName(widget.controlId, 'Foto');
+    if (existingVariable != null) {
+      existingVariable.imagePath = path;
+      await VariablesRepository().update(existingVariable.idVariable!, existingVariable);
+    } else {
+      final nuevaVariable = Variable(
+        nombreVariable: 'Foto',
+        valorTexto: null,
+        valorNumerico: null,
+        valorFecha: null,
+        fkidControl: widget.controlId,
+        imagePath: path,
+      );
+      await VariablesRepository().create(nuevaVariable);
+    }
+    _refreshVariables();
   }
 
   @override
@@ -143,7 +148,7 @@ class _VariablesListViewState extends State<VariablesListView> {
                   return Center(child: Text('No hay variables disponibles', style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic)));
                 }
 
-                final variables = snapshot.data!;
+                final variables = snapshot.data!.where((variable) => variable.nombreVariable != 'Foto').toList();
 
                 return ListView.builder(
                   padding: const EdgeInsets.all(8.0),
@@ -244,7 +249,7 @@ class VariableDetailView extends StatelessWidget {
             children: [
               TextFormField(
                 controller: _valueController,
-                keyboardType: variable.nombreVariable == 'Altura' || variable.nombreVariable == 'Cantidad de agua'
+                keyboardType: variable.nombreVariable == 'Altura' || variable.nombreVariable == 'Cantidad de agua' || variable.nombreVariable == 'Cantidad de Saponinas'
                     ? TextInputType.number
                     : variable.valorFecha != null
                         ? TextInputType.datetime
@@ -254,17 +259,23 @@ class VariableDetailView extends StatelessWidget {
                       ? 'Ingrese el valor en cm'
                       : variable.nombreVariable == 'Cantidad de agua'
                           ? 'Ingrese el valor en litros'
-                          : 'Valor de ${variable.nombreVariable}',
+                          : variable.nombreVariable == 'Cantidad de Saponinas'
+                              ? 'Ingrese el valor en cm'
+                              : 'Valor de ${variable.nombreVariable}',
                   border: OutlineInputBorder(),
                   suffixText: variable.nombreVariable == 'Altura'
                       ? 'cm'
                       : variable.nombreVariable == 'Cantidad de agua'
                           ? 'litros'
-                          : null,
+                          : variable.nombreVariable == 'Cantidad de Saponinas'
+                              ? 'cm'
+                              : null,
                 ),
-                inputFormatters: variable.nombreVariable == 'Altura' || variable.nombreVariable == 'Cantidad de agua'
+                inputFormatters: variable.nombreVariable == 'Altura' || variable.nombreVariable == 'Cantidad de agua' || variable.nombreVariable == 'Cantidad de Saponinas'
                     ? [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))]
-                    : null,
+                    : variable.nombreVariable == 'Color de hoja'
+                        ? [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]'))]
+                        : null,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'El valor es requerido';
@@ -277,8 +288,14 @@ class VariableDetailView extends StatelessWidget {
                   }
                   if (variable.nombreVariable == 'Cantidad de agua') {
                     final cantidad = double.tryParse(value);
-                    if (cantidad == null || cantidad < 0) {
-                      return 'La cantidad de agua debe ser un número positivo';
+                    if (cantidad == null || cantidad < 0 || cantidad > 30) {
+                      return 'La cantidad de agua debe ser un número entre 0 y 30 litros';
+                    }
+                  }
+                  if (variable.nombreVariable == 'Cantidad de Saponinas') {
+                    final cantidad = double.tryParse(value);
+                    if (cantidad == null || cantidad < 0 || cantidad > 20) {
+                      return 'La cantidad debe ser un número entre 0 y 20 cm';
                     }
                   }
                   return null;
@@ -302,7 +319,7 @@ class VariableDetailView extends StatelessWidget {
               ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    if (variable.nombreVariable == 'Altura' || variable.nombreVariable == 'Cantidad de agua') {
+                    if (variable.nombreVariable == 'Altura' || variable.nombreVariable == 'Cantidad de agua' || variable.nombreVariable == 'Cantidad de Saponinas') {
                       variable.valorNumerico = double.tryParse(_valueController.text);
                     } else if (variable.valorFecha != null) {
                       variable.valorFecha = DateTime.tryParse(_valueController.text);
@@ -333,38 +350,93 @@ class VariableDetailView extends StatelessWidget {
   }
 }
 
-class ImageViewScreen extends StatelessWidget {
+class ImageViewScreen extends StatefulWidget {
+  final int controlId;
   final XFile? imageFile;
   final Function(XFile) onImageTaken;
+  final String userRole;
 
-  const ImageViewScreen({Key? key, required this.imageFile, required this.onImageTaken}) : super(key: key);
+  const ImageViewScreen({Key? key, required this.controlId, required this.imageFile, required this.onImageTaken, required this.userRole}) : super(key: key);
+
+  @override
+  _ImageViewScreenState createState() => _ImageViewScreenState();
+}
+
+class _ImageViewScreenState extends State<ImageViewScreen> {
+  XFile? _imageFile;
+
+  @override
+  void initState() {
+    super.initState();
+    _imageFile = widget.imageFile;
+    _loadImage();
+  }
+
+  Future<void> _loadImage() async {
+    final existingVariable = await VariablesRepository().getVariableByControlAndName(widget.controlId, 'Foto');
+    if (existingVariable != null && existingVariable.imagePath != null) {
+      setState(() {
+        _imageFile = XFile(existingVariable.imagePath!);
+      });
+    }
+  }
 
   Future<void> _takePhoto(BuildContext context) async {
-    final status = await [
-      Permission.camera,
-    ].request();
+    if (widget.userRole == 'admin' || widget.userRole == 'editor') {
+      final status = await [
+        Permission.camera,
+      ].request();
 
-    if (status[Permission.camera]!.isGranted) {
-      final ImagePicker _picker = ImagePicker();
-      final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-      if (image != null) {
-        onImageTaken(image);
-        Navigator.pop(context);
+      if (status[Permission.camera]!.isGranted) {
+        final ImagePicker _picker = ImagePicker();
+        final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+        if (image != null) {
+          setState(() {
+            _imageFile = image;
+          });
+          await _saveImagePath(image.path);
+          widget.onImageTaken(image);
+        }
+      } else if (status[Permission.camera]!.isDenied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Permiso para acceder a la cámara denegado'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      } else if (status[Permission.camera]!.isPermanentlyDenied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Permiso para acceder a la cámara denegado permanentemente. Por favor, habilítelo en la configuración.'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
-    } else if (status[Permission.camera]!.isDenied) {
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Permiso para acceder a la cámara denegado'),
+          content: Text('No tienes permiso para tomar fotos'),
           backgroundColor: Colors.red,
         ),
       );
-    } else if (status[Permission.camera]!.isPermanentlyDenied) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Permiso para acceder a la cámara denegado permanentemente. Por favor, habilítelo en la configuración.'),
-          backgroundColor: Colors.red,
-        ),
+    }
+  }
+
+  Future<void> _saveImagePath(String path) async {
+    final existingVariable = await VariablesRepository().getVariableByControlAndName(widget.controlId, 'Foto');
+    if (existingVariable != null) {
+      existingVariable.imagePath = path;
+      await VariablesRepository().update(existingVariable.idVariable!, existingVariable);
+    } else {
+      final nuevaVariable = Variable(
+        nombreVariable: 'Foto',
+        valorTexto: null,
+        valorNumerico: null,
+        valorFecha: null,
+        fkidControl: widget.controlId,
+        imagePath: path,
       );
+      await VariablesRepository().create(nuevaVariable);
     }
   }
 
@@ -385,18 +457,19 @@ class ImageViewScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            imageFile == null
+            _imageFile == null
                 ? Text('No existe ninguna foto.')
-                : Image.file(File(imageFile!.path)),
+                : Image.file(File(_imageFile!.path)),
             const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () => _takePhoto(context),
-              child: const Text('Tomar Foto'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                foregroundColor: Colors.white,
+            if (widget.userRole == 'admin' || widget.userRole == 'editor')
+              ElevatedButton(
+                onPressed: () => _takePhoto(context),
+                child: const Text('Tomar Foto'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                ),
               ),
-            ),
           ],
         ),
       ),

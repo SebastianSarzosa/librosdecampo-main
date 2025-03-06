@@ -59,4 +59,19 @@ class VariablesRepository {
   Future<int> update(int id, Variable variable) async {
     return await DbConnection.update(tableName, variable.toMap(), id);
   }
+
+  // Método para obtener una variable por control y nombre
+  Future<Variable?> getVariableByControlAndName(int controlId, String nombreVariable) async {
+    final db = await DbConnection.getDatabase();
+    final List<Map<String, dynamic>> maps = await db.query(
+      tableName,
+      where: 'fkid_control = ? AND nombre_variable = ?',
+      whereArgs: [controlId, nombreVariable],
+    );
+
+    if (maps.isNotEmpty) {
+      return Variable.fromMap(maps.first);
+    }
+    return null;
+  }
 }
