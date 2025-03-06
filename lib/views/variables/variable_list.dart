@@ -172,12 +172,10 @@ class _VariablesListViewState extends State<VariablesListView> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Valor: ${variable.valorTexto ?? variable.valorNumerico?.toString() ?? variable.valorFecha}',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[600],
-                              ),
-                            ),
+                              'Valor: ${variable.valorTexto ?? ""}'
+                              ' ${variable.valorNumerico != null ? variable.valorNumerico.toString() : ""}\n'
+                            )
+
                           ],
                         ),
                         trailing: (widget.userRole == 'admin' || widget.userRole == 'editor')
