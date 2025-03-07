@@ -130,26 +130,7 @@ class _PlantaFormViewState extends State<PlantaFormView> {
                   border: OutlineInputBorder(),
                 ),
                 readOnly: true,
-                onTap: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2101),
-                  );
-                  if (pickedDate != null) {
-                    String formattedDate = pickedDate.toString().split(' ')[0];
-                    setState(() {
-                      _fechaControlController.text = formattedDate;
-                    });
-                  }
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'La fecha de inicio del control es requerida';
-                  }
-                  return null;
-                },
+                
               ),
               SizedBox(height: 20),
               Text('Selecciona las variables:'),
