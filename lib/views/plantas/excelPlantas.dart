@@ -7,6 +7,7 @@ import 'package:libroscampo/models/plantas.dart';
 import 'package:libroscampo/repositories/plantas_repository.dart';
 import 'package:libroscampo/repositories/controles_repository.dart';
 import 'package:libroscampo/repositories/variables_repository.dart';
+import 'package:open_file/open_file.dart'; // Importar paquete para abrir archivos
 
 class ExportarExcelScreen extends StatefulWidget {
   final int proyectoId;
@@ -117,23 +118,37 @@ class _ExportarExcelScreenState extends State<ExportarExcelScreen> {
                             planta.descripcion,
                             control.nombreControl,
                             variable.nombreVariable,
-                            variable.valorTexto ?? variable.valorNumerico ?? variable.valorFecha?.toIso8601String() ?? ''
+                            variable.valorTexto ??
+                                (variable.valorNumerico != null ? variable.valorNumerico?.toDouble() : '') ??
+                                variable.valorFecha?.toIso8601String() ??
+                                ''
                           ]);
+
+
                         }
                       }
                     }
 
-                    bool success = await ExcelExporter.exportToExcel(data, "plantas_controles_variables.xlsx");
-                    if (success) {
+                    String? filePath = await ExcelExporter.exportToExcel(data, "plantas_controles_variables.xlsx");
+                    if (filePath != null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Datos exportados a Excel"),
-                        backgroundColor: Colors.green,
+                        SnackBar(
+                          content: Text("Datos exportados a Excel"),
+                          backgroundColor: Colors.green,
+                          action: SnackBarAction(
+                            label: 'Abrir',
+                            textColor: Colors.white,
+                            onPressed: () {
+                              OpenFile.open(filePath);
+                            },
+                          ),
                         ),
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Error al exportar datos"),
-                        backgroundColor: Colors.red,
+                        SnackBar(
+                          content: Text("Error al exportar datos"),
+                          backgroundColor: Colors.red,
                         ),
                       );
                     }
@@ -154,7 +169,7 @@ class _ExportarExcelScreenState extends State<ExportarExcelScreen> {
 
 class ExcelExporter {
   // Método estático para exportar datos a un archivo Excel
-  static Future<bool> exportToExcel(List<List<dynamic>> data, String fileName) async {
+  static Future<String?> exportToExcel(List<List<dynamic>> data, String fileName) async {
     try {
       // Crear un nuevo archivo Excel
       var excel = Excel.createExcel();
@@ -186,10 +201,10 @@ class ExcelExporter {
       file.writeAsBytesSync(excel.encode()!);
 
       print("Archivo guardado en: $path");
-      return true; // Éxito
+      return path; // Devolver la ruta del archivo
     } catch (e) {
       print("Error al exportar a Excel: $e");
-      return false; // Fallo
+      return null; // Fallo
     }
   }
 }
