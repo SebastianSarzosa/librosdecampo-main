@@ -21,14 +21,25 @@ class ControlesRepository {
       return Control.fromMap(maps[i]);
     });
   }
+
   // Método para eliminar un control por ID
   Future<int> delete(int id) async {
     return await DbConnection.delete(tableName, id);
   }
 
   // Método para actualizar un control por ID
-  Future<int> update(int id, Control control) async {
-    return await DbConnection.update(tableName, control.toMap(), id);
+  Future<int> updateControl(int id, Control control) async {
+    return await DbConnection.updateControl(tableName, control.toMap(), id);
+  }
+
+  // Método para obtener un control por ID
+  Future<Control> getControlById(int id) async {
+    final List<Map<String, dynamic>> maps = await DbConnection.filter(tableName, 'id_control = ?', [id]);
+    if (maps.isNotEmpty) {
+      return Control.fromMap(maps.first);
+    } else {
+      throw Exception('Control no encontrado');
+    }
   }
 
   Future<void> addControl(Control control) async {

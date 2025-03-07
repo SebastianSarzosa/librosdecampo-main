@@ -174,7 +174,6 @@ class _PlantaFormViewState extends State<PlantaFormView> {
                       Control control = Control(
                         fkidPlanta: plantaId,
                         nombreControl: _controlNombreController.text, // Asegúrate de que este campo no sea nulo
-                        descripcion: _controlNombreController.text,
                         fechaControl: _fechaControlController.text,
                       );
                       var controlId = await ControlesRepository().create(control);

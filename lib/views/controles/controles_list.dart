@@ -3,8 +3,9 @@ import 'package:libroscampo/models/controles.dart';
 import 'package:libroscampo/repositories/controles_repository.dart';
 import 'package:libroscampo/views/dashboardPlanta.dart';
 import 'package:libroscampo/views/variables/variable_list.dart';
+import 'package:libroscampo/views/controles/controles_edit.dart'; // Importar la vista de edición
 
-class ControlesListView extends StatelessWidget {
+class ControlesListView extends StatefulWidget {
   final int plantaId;
   final int proyectoId;
   final String proyectoNombre;
@@ -21,9 +22,27 @@ class ControlesListView extends StatelessWidget {
      });
 
   @override
-  Widget build(BuildContext context) {
-    final ControlesRepository controlesRepository = ControlesRepository();
+  _ControlesListViewState createState() => _ControlesListViewState();
+}
 
+class _ControlesListViewState extends State<ControlesListView> {
+  final ControlesRepository controlesRepository = ControlesRepository();
+  late Future<List<Control>> _controlesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _controlesFuture = controlesRepository.listControlsByPlant(widget.plantaId);
+  }
+
+  void _refreshControls() {
+    setState(() {
+      _controlesFuture = controlesRepository.listControlsByPlant(widget.plantaId);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -40,7 +59,7 @@ class ControlesListView extends StatelessWidget {
         ),
       ),
       body: FutureBuilder<List<Control>>(
-        future: controlesRepository.listControlsByPlant(plantaId),
+        future: _controlesFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -81,23 +100,49 @@ class ControlesListView extends StatelessWidget {
                       color: Colors.grey[600],
                     ),
                   ),
-                  trailing: Icon(Icons.arrow_forward_ios, color: Colors.teal),
-                   onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => VariablesListView(
-                            controlId: control.idControl!,
-                            userRole: userRole,
-                            userName: userName,
-                            libroId: libroId,
-                            libroNombre: libroNombre,
-                            proyectoId: proyectoId,
-                            proyectoNombre: proyectoNombre,
-                          ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (widget.userRole == 'admin') // Mostrar el icono de edición solo si el rol es admin
+                        IconButton(
+                          icon: Icon(Icons.edit, color: Colors.teal),
+                          onPressed: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditControlView(
+                                  controlId: control.idControl!,
+                                  userRole: widget.userRole,
+                                  userName: widget.userName,
+                                  libroId: widget.libroId,
+                                  libroNombre: widget.libroNombre,
+                                  proyectoId: widget.proyectoId,
+                                  proyectoNombre: widget.proyectoNombre,
+                                ),
+                              ),
+                            );
+                            _refreshControls();
+                          },
                         ),
-                      );
-                    },
+                      Icon(Icons.arrow_forward_ios, color: Colors.teal),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => VariablesListView(
+                          controlId: control.idControl!,
+                          userRole: widget.userRole,
+                          userName: widget.userName,
+                          libroId: widget.libroId,
+                          libroNombre: widget.libroNombre,
+                          proyectoId: widget.proyectoId,
+                          proyectoNombre: widget.proyectoNombre,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               );
             },
@@ -110,13 +155,13 @@ class ControlesListView extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => DashboardPlantaView(
-                plantaId: plantaId,
-                proyectoId: proyectoId,
-                proyectoNombre: proyectoNombre,
-                userRole: userRole,
-                userName: userName,
-                libroId: libroId,
-                libroNombre: libroNombre,
+                plantaId: widget.plantaId,
+                proyectoId: widget.proyectoId,
+                proyectoNombre: widget.proyectoNombre,
+                userRole: widget.userRole,
+                userName: widget.userName,
+                libroId: widget.libroId,
+                libroNombre: widget.libroNombre,
               ),
             ),
           );
