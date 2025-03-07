@@ -47,6 +47,51 @@ class _ProyectoListViewState extends State<ProyectoListView> {
     });
   }
 
+  void _deleteProyecto(int proyectoId) async {
+    bool confirm = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.warning, color: Colors.red),
+              
+            ],
+          ),
+          content: Text(
+            '¿Está seguro de que desea eliminar este proyecto? Una vez eliminado, no se podrán recuperar los datos.',
+            style: TextStyle(color:  Colors.black),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text('No', style: TextStyle(color: Colors.red)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Text('Sí', style: TextStyle(color: Colors.green[600])),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirm) {
+      await ProyectosRepository().delete(proyectoId);
+      _fetchProyectos();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Proyecto eliminado correctamente'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,6 +184,13 @@ class _ProyectoListViewState extends State<ProyectoListView> {
                                       ),
                                     ),
                                   );
+                                },
+                              ),
+                            if (widget.userRole == 'admin') // Mostrar el botón de eliminación solo si el usuario es admin
+                              IconButton(
+                                icon: Icon(Icons.delete, color: Colors.red),
+                                onPressed: () {
+                                  _deleteProyecto(proyecto.idProyecto!);
                                 },
                               ),
                             Icon(Icons.arrow_forward_ios, color: Colors.teal), // Ícono de flecha al final

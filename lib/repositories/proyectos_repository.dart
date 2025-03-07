@@ -24,7 +24,7 @@ class ProyectosRepository {
 
   // Método para eliminar un proyecto por ID
   Future<int> delete(int id) async {
-    return await DbConnection.delete(tableName, id);
+    return await DbConnection.deleteProyecto(tableName, id);
   }
 
   // Método para actualizar un proyecto por ID

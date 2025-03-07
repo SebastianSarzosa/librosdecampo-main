@@ -24,7 +24,7 @@ class ControlesRepository {
 
   // Método para eliminar un control por ID
   Future<int> delete(int id) async {
-    return await DbConnection.delete(tableName, id);
+    return await DbConnection.deleteControl(tableName, id);
   }
 
   // Método para actualizar un control por ID

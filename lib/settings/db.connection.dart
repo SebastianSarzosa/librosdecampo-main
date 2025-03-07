@@ -339,7 +339,22 @@ class DbConnection {
       whereArgs: [id],
     );
   }
-
+  static Future<int> deleteControl(String tableName, int id) async {
+    final db = await getDatabase();
+    return db.delete(
+      tableName,
+      where: "id_control=?",
+      whereArgs: [id],
+    );
+  }
+  static Future<int> deleteProyecto(String tableName, int id) async {
+    final db = await getDatabase();
+    return db.delete(
+      tableName,
+      where: "id_pro=?",
+      whereArgs: [id],
+    );
+  }
   static Future<List<Map<String, dynamic>>> list(String tableName) async {
     final db = await getDatabase();
     return await db.query(tableName);

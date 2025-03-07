@@ -4,6 +4,8 @@ import 'package:libroscampo/repositories/controles_repository.dart';
 import 'package:libroscampo/views/dashboardPlanta.dart';
 import 'package:libroscampo/views/variables/variable_list.dart';
 import 'package:libroscampo/views/controles/controles_edit.dart'; // Importar la vista de edición
+import 'package:libroscampo/models/plantas.dart'; // Importar el modelo Planta
+import 'package:libroscampo/repositories/plantas_repository.dart'; // Importar PlantasRepository
 
 class ControlesListView extends StatefulWidget {
   final int plantaId;
@@ -39,6 +41,51 @@ class _ControlesListViewState extends State<ControlesListView> {
     setState(() {
       _controlesFuture = controlesRepository.listControlsByPlant(widget.plantaId);
     });
+  }
+
+  void _deleteControl(int controlId) async {
+    bool confirm = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.warning, color: Colors.red),
+              
+            ],
+          ),
+          content: Text(
+            '¿Está seguro de que desea eliminar este control? Una vez eliminado, no se podrán recuperar los datos.',
+            style: TextStyle(color:  Colors.black),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text('No', style: TextStyle(color: Colors.red)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Text('Sí', style: TextStyle(color: Colors.green[600])),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirm) {
+      await controlesRepository.delete(controlId);
+      _refreshControls();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Control eliminado correctamente'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
   }
 
   @override
@@ -122,6 +169,13 @@ class _ControlesListViewState extends State<ControlesListView> {
                               ),
                             );
                             _refreshControls();
+                          },
+                        ),
+                      if (widget.userRole == 'admin') // Mostrar el icono de eliminación solo si el rol es admin
+                        IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            _deleteControl(control.idControl!);
                           },
                         ),
                       Icon(Icons.arrow_forward_ios, color: Colors.teal),
